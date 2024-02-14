@@ -1,0 +1,33 @@
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\bin\Debug\COM_DoorsLibrary.dll
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\bin\Debug\COM_DoorsLibrary.pdb
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\bin\Debug\COM_DoorsLibrary.tlb
+K:\Автоматическая_обработка_заказов\SDK_ClassLibrary\COM_DoorsLibrary.dll
+K:\Автоматическая_обработка_заказов\SDK_ClassLibrary\COM_DoorsLibrary.pdb
+K:\Автоматическая_обработка_заказов\SDK_ClassLibrary\COM_DoorsLibrary.tlb
+\\nas\ГК СТАЛЛ-ДООРС\отдел конструкторский\Автоматическая_обработка_заказов\SDK_ClassLibrary\COM_DoorsLibrary.dll
+\\nas\ГК СТАЛЛ-ДООРС\отдел конструкторский\Автоматическая_обработка_заказов\SDK_ClassLibrary\COM_DoorsLibrary.pdb
+\\nas\ГК СТАЛЛ-ДООРС\отдел конструкторский\Автоматическая_обработка_заказов\SDK_ClassLibrary\COM_DoorsLibrary.tlb
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.csproj.AssemblyReference.cache
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.csproj.ResolveComReference.cache
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.MessForm.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Dobors.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Glazki.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Glazok.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Zadvizhka.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Framuga.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Kalitka.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Nalichniki.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Okno.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Porog.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Reshetka.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Ruchka.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Steklo.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_WAktiv.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.Формы.Фрагменты.Fragment_Zamok.resources
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.csproj.GenerateResource.cache
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.csproj.CoreCompileInputs.cache
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.dll
+E:\Махортов\Макросы\COM_DoorsLibrary\COM_DoorsLibrary\obj\Debug\COM_DoorsLibrary.pdb
+E:\Махортов\Макросы\DoorsApp\DoorsApp\bin\Debug\COM_DoorsLibrary.dll
+E:\Махортов\Макросы\DoorsApp\DoorsApp\bin\Debug\COM_DoorsLibrary.pdb
+E:\Махортов\Макросы\DoorsApp\DoorsApp\bin\Debug\COM_DoorsLibrary.tlb
