@@ -97,6 +97,13 @@ internal class KorobkaDM
     {
         return !(Detales[(short)pos] == null);
     }
+    public bool IsStoykaZamkovaya(Raspolozhenie pos)
+    {
+        if (!IsStoyka(pos)) 
+            return false;
+
+        return Detales[(short)pos].zSt;
+    }
     public bool IsObrezkaNalichnika(Raspolozhenie pos)
     {
         if (IsStoyka(pos)) {
@@ -194,10 +201,21 @@ internal class KorobkaDM
             return 0;
         }
     }
-    public double StikovkaStoyki(Raspolozhenie pos) {
+    public double UpStikovkaStoyki(Raspolozhenie pos) {
         if (pos == Raspolozhenie.Прав | pos == Raspolozhenie.Лев) {
-            return Detales[(short)pos].Stik;
+            return Detales[(short)pos].StikUp;
         } else {
+            return 0;
+        }
+    }
+    public double DwnStikovkaStoyki(Raspolozhenie pos)
+    {
+        if (pos == Raspolozhenie.Прав | pos == Raspolozhenie.Лев)
+        {
+            return Detales[(short)pos].StikDwn;
+        }
+        else
+        {
             return 0;
         }
     }
@@ -315,6 +333,20 @@ internal class KorobkaDM
     {
         return IsStoyka(pos) 
             ? Detales[(short)pos].Type 
+            : (short) 0;
+    }
+
+    public short RzkWidth(Raspolozhenie pos)
+    {
+        return IsStoyka(pos) 
+            ? Detales[(short)pos].RZKWidth 
+            : (short) 0;
+    }
+
+    public short RzkHeight(Raspolozhenie pos)
+    {
+        return IsStoyka(pos) 
+            ? Detales[(short)pos].RZKHeight 
             : (short) 0;
     }
 }

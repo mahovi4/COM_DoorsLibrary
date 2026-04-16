@@ -2,7 +2,7 @@
 
 internal class VnutrenniyListDM
 {
-    private readonly double _height, _width;
+    private readonly double _height, _width, thick;
     private readonly bool sekPl, kabelKanal;
     private readonly short vstavka, sPor, koef90, koef62;
 
@@ -14,6 +14,8 @@ internal class VnutrenniyListDM
         _width = pos == Stvorka.Активная ? wStv + double.Parse(iniDM.ReadKey("List", "DM_K_WVL_AS")) + koef90 + (koef62 * 2) :
                                            wStv + double.Parse(iniDM.ReadKey("List", "DM_K_WVL_PS")) + (koef90 / 2) + koef62;
         _height = hStv;
+
+        thick = param.Thick_VL;
 
         if (param.Thick_VL == 2){
             if (pos == Stvorka.Активная){
@@ -65,4 +67,8 @@ internal class VnutrenniyListDM
     {
         get => vstavka;
     }
+
+    public double Thick => thick;
+    public short Coefficient => 
+        koef62 > 0 ? koef62 : koef90 > 0 ? koef90 : (short)0;
 }

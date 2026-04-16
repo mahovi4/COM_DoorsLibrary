@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using COM_DoorsLibrary;
 
 [Guid("925741bc-3bf6-44c4-9355-9fe210f6da7e")]
 public interface ITableData
@@ -378,6 +379,7 @@ public class TableData : ITableData
     private bool _DPM = false;                                  //дверь ДПМ
     private bool _EIW = false;                                  //двери EIW
     private bool _EIWS = false;                                 //двери EIWS
+    private bool _RZh = false;                                  //двери РЖ
 
     //---Калитка--------------------------------------------------------------------------------------------------------------------------------
     private bool _Kalit = false;                                //Наличие калитки
@@ -411,6 +413,9 @@ public class TableData : ITableData
     private bool NStoTS = false;
     private bool _LicPanel = false;
     private bool _Zerkalo = false;
+    private bool _DopKontur = false;                            //Наличие дополнительного контура уплотнения
+    private bool _Shild = false;                                //Наличие противопожарного шильда
+    private bool _VirezShpingalet = true;                       //Наличие тех. вырезов под установку шпингалета
 
     //---Толщины листов-------------------------------------------------------------------------------------------------------------------------
     private double _Thick_LL = 0;                                //Толщина лицевого листа
@@ -431,6 +436,12 @@ public class TableData : ITableData
     //---Фрамуги--------------------------------------------------------------------------------------------------------------------------------
     //(_Framuga(0)-верх, _Framuga(1)-ниж, _Framuga(2)-прав, _Framuga(3)-лев)
     private FramugaParam[] _Framuga = new FramugaParam[4];
+
+    //Отбойные пластины
+    public List<OtboynayaPlastina> OtboynayaPlastina { get; set; } = new List<OtboynayaPlastina>();
+
+    //---Запись о вырезах-----------------------------------------------------------------------------------------------------------------------
+    public bool Virezi { get; set; }
 
     private string _Comments = "_";
 
@@ -1031,6 +1042,12 @@ public class TableData : ITableData
         set => _EIWS = value;
     }
 
+    public bool RZh
+    {
+        get => _RZh;
+        set => _RZh = value;
+    }
+
     public bool Kalit {
         get => _Kalit;
         set => _Kalit = value;
@@ -1429,6 +1446,24 @@ public class TableData : ITableData
         set => _Termoblock = value;
     }
 
+    public bool Shild
+    {
+        get => _Shild;
+        set => _Shild = value;
+    }
+
+    public bool VirezShpigalet
+    {
+        get => _VirezShpingalet;
+        set => _VirezShpingalet = value;
+    }
+
+    public bool DopKontur
+    {
+        get => _DopKontur;
+        set => _DopKontur = value;
+    }
+
     public double Thick_LL {
         get => _Thick_LL;
         set => _Thick_LL = value;
@@ -1780,6 +1815,7 @@ public class TableData : ITableData
                 EI = _EI,
                 EIS = _EIS,
                 DPM = _DPM,
+                RZh = _RZh,
                 Porog = _Porog,
                 Nalichniki = _Nalichniki,
                 Intek = _Intek,
@@ -1799,8 +1835,11 @@ public class TableData : ITableData
                 GNDFromTable = _GNDFromTable,
                 Kodoviy = _Kodoviy,
                 TSpingalet = _TSpingalet,
+                VirezShpingalet = _VirezShpingalet,
                 NSasTS = NStoTS,
                 Termoblock = _Termoblock,
+                Shild = _Shild,
+                DopKontur = _DopKontur,
                 Thick_LL = _Thick_LL,
                 Thick_VL = _Thick_VL,
                 Okno = _Okno,
@@ -1810,6 +1849,8 @@ public class TableData : ITableData
                 Dobor = _Dobor,
                 DoborPar = _DoborPar,
                 Framuga = _Framuga,
+                OtboynayaPlastina = OtboynayaPlastina,
+                Virezi = Virezi,
                 Comments = _Comments,
                 AppRow  = _AppRow,
                 AppError = _AppError,
@@ -1883,6 +1924,7 @@ public class TableData : ITableData
                 Protivos = _Protivos,
                 TSpingalet = _TSpingalet,
                 Thick_LL = _Thick_LL,
+                Virezi = Virezi,
                 Comments = _Comments,
                 AppRow = _AppRow,
                 AppError = _AppError,
@@ -2123,17 +2165,21 @@ public struct RuchkaParam
 {
     public short Kod;
     public string Name;
+    public bool IsZamkovaya;
     public short OtPola;
     public short Mezhosevoe;
     public string FromTable;
+    public short KodRuchkaLL;
 
-    public RuchkaParam(short kod = 0, string name = "_", short otPola = 1000, short mezhosevoe = 300, string fromTable = "_")
+    public RuchkaParam(short kod = 0, string name = "_", short otPola = 1000, short mezhosevoe = 300, bool isZamkovaya = true, short kodRuchkaLL = 0, string fromTable = "_")
     {
         Kod = kod;
         Name = name;
+        IsZamkovaya = isZamkovaya;
         OtPola = otPola;
         Mezhosevoe = mezhosevoe;
         FromTable = fromTable;
+        KodRuchkaLL = kodRuchkaLL;
     }
 
     public string AsString()
@@ -2519,6 +2565,7 @@ public struct DMParam
     public bool EI;                                   //дверь EI
     public bool EIS;                                  //дверь EIS
     public bool DPM;                                  //дверь ДПМ
+    public bool RZh;
 
     //---Коробка---------------------------------------------------------------------------------------------------------------------------------------
     public PorogParam Porog;                          //Порог (0-нет, 40-40, 25-25, 14-14, 100-100, 2-выпадающий)
@@ -2545,6 +2592,9 @@ public struct DMParam
     public bool TSpingalet;                           //Наличие торцевых шпингалетов
     public bool Termoblock;                           //Наличие термоблокераторов
     public bool NSasTS;
+    public bool DopKontur;
+    public bool Shild;
+    public bool VirezShpingalet;
 
     //---Толщины листов--------------------------------------------------------------------------------------------------------------------------------
     public double Thick_LL;                                //Толщина лицевого листа
@@ -2565,6 +2615,10 @@ public struct DMParam
     //---Фрамуги---------------------------------------------------------------------------------------------------------------------------------------
     //(_Framuga(0)-верх, _Framuga(1)-ниж, _Framuga(2)-прав, _Framuga(3)-лев)
     public FramugaParam[] Framuga;
+
+    public List<OtboynayaPlastina> OtboynayaPlastina;
+
+    public bool Virezi;
 
     public string Comments;
 
@@ -2660,6 +2714,8 @@ public struct ODLParam
     public bool AppProblem;
     public string AppMemory;
 
+    public bool Virezi;
+
     public bool IsZamok(short num)
     {
         if (Zamok != null & Zamok.Length > num)
@@ -2672,7 +2728,7 @@ public struct ODLParam
     {
         if (Ruchka != null & Ruchka.Length > num)
         {
-            return !(Ruchka[num].Kod == 0);
+            return Ruchka[num].Kod != 0;
         }
         else return false;
     }

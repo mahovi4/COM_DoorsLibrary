@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
@@ -122,9 +123,10 @@ public interface IEODL
 public class ODL : IODL
 {
     private short _Height, _Width, HLD, WlA, WLP, ListOtPola, ZPOtPola, HZP, HZPP, WZPA, HZPS, WZPP, WPP, ZamokOtPola, RuchkaOtPola, Do3Ankera;
-    private double WAktiv, WPassiv, WHS, ZamokOtKraya;
-    private string _Errors, _Problems;
+    private double WAktiv, WPassiv, WHS, ZamokOtKraya, TorcShpingalet;
+    private string _Errors, _Problems, ruchkaName, zamokName;
     private readonly double[] nalichniki = new double[4];
+    private bool cm, suv;
 
     private readonly Constants cons = new Constants();
     private IniFile ini;
@@ -148,6 +150,8 @@ public class ODL : IODL
             Errors = "Высота не кратна 10! ";
         if (param.Width % 10 != 0)
             Errors = "Ширина не кратна 10! ";
+        if (param.Virezi)
+            Problems = "В колонке 'Вырезы' присутствует запись";
 
         //Ширина створки
         if (param.WAktiv.Value == 0d)
@@ -357,22 +361,66 @@ public class ODL : IODL
         switch (param.Zamok[0].Kod)
         {
             case (int)ODL_ZamokNames.ПП:
+                zamokName = "Противопожарный";
                 ZamokOtKraya = double.Parse(ini.ReadKey("Profili", "ODL_ZAMOK_DL"));
                 break;
             case (int)ODL_ZamokNames.Просам_ЗВ_8:
+                zamokName = "ПРОСАМ ЗВ-8";
                 ZamokOtKraya = double.Parse(ini.ReadKey("Profili", "ODL_ZAMOK_ZV_8"));
                 break;
             case (int)ODL_ZamokNames.Г_12_11_ручка_фланец:
+                zamokName = "ГАРДИАН 12.11";
                 ZamokOtKraya = double.Parse(ini.ReadKey("Profili", "ODL_ZAMOK_12_11"));
                 break;
             case (int)ODL_ZamokNames.Почтовый:
+                zamokName = "Почтовый";
                 ZamokOtKraya = double.Parse(ini.ReadKey("Profili", "ODL_ZAMOK_P"));
                 break;
+            case (int)ODL_ZamokNames.Гардиан_10_01:
+                zamokName = "ГАРДИАН 10.01";
+                ZamokOtKraya = double.Parse(ini.ReadKey("Profili", "ODL_ZAMOK_10_01"));
+                break;
+            default:
+                zamokName = "";
+                break;
         }
-        if(param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
+
+        switch (param.Ruchka[0].Kod)
+        {
+            case (short)RuchkaNames.Ручка_черная_планка:
+                ruchkaName = "Ручка-Вега";
+                break;
+            case (short)RuchkaNames.Ручка_Потайная:
+                ruchkaName = "Ручка потайная";
+                break;
+            case (short)RuchkaNames.Ручка_кнопка:
+                ruchkaName = "Ручка-Кнопка";
+                break;
+            case (short)RuchkaNames.Ручка_фланец:
+                if (param.Zamok[0].Kod == (short)ODL_ZamokNames.ПП) 
+                    ruchkaName = "Ручка на фланце";
+                else
+                    ruchkaName = "Ручка на фланце (стяжки)";
+                break;
+            default:
+                ruchkaName = "";
+                break;
+        }
+
+        cm = param.Zamok[0].Kod == (int)ODL_ZamokNames.Почтовый || 
+             param.Zamok[0].Cilinder;
+
+        suv = param.Zamok[0].Kod == (int) ODL_ZamokNames.Гардиан_10_01 ||
+              param.Zamok[0].Kod == (int) ODL_ZamokNames.Просам_ЗВ_8;
+
+        if (param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
             ZamokOtKraya += double.Parse(ini.ReadKey("Profili", "ODL_ZP_Z_PRITVOR_NO"));
         else
             ZamokOtKraya += double.Parse(ini.ReadKey("Profili", "ODL_ZP_Z_PRITVOR_VO"));
+
+        //Ответка торцевой задвижки Делга
+        if (WPassiv > 0)
+            TorcShpingalet = WPassiv - double.Parse(ini.ReadKey("Torcevoy", "ODL_OTZ_Ots"));
     }
 
     public string Errors
@@ -412,78 +460,75 @@ public class ODL : IODL
             case 0:
                 if (IsPassivka)
                     return "ODLS2_LLA_" + param.Num;
-                else
-                    return "ODLS1_LL__" + param.Num;
+                return "ODLS1_LL__" + param.Num;
+
             case 1:
                 return "ODLS2_LLP_" + param.Num;
+
             case 2:
                 if (param.Otkrivanie.Value == Otkrivanie.Левое)
                 {
                     if (param.Nalichniki[(int)Raspolozhenie.Прав] > 0)
                         return "C1_(50)ZS_" + param.Num;
-                    else
-                        return "C2_(50)ZS_" + param.Num;
+                    return "C2_(50)ZS_" + param.Num;
                 }
                 else if (param.Otkrivanie.Value == Otkrivanie.Правое)
                 {
                     if (param.Nalichniki[(int)Raspolozhenie.Лев] > 0)
                         return "C1_(50)ZS_" + param.Num;
-                    else
-                        return "C2_(50)ZS_" + param.Num;
+                    return "C2_(50)ZS_" + param.Num;
                 }
-                else
-                    return "C3_(50)ZS_" + param.Num;
+                return "C3_(50)ZS_" + param.Num;
+
             case 3:
                 if (param.Otkrivanie.Value == Otkrivanie.Левое)
                 {
                     if (param.Nalichniki[(int)Raspolozhenie.Лев] > 0)
                         return "C1_(50)PS_" + param.Num;
-                    else
-                        return "C2_(50)PS_" + param.Num;
+                    return "C2_(50)PS_" + param.Num;
                 }
-                else if (param.Otkrivanie.Value == Otkrivanie.Правое)
+                if (param.Otkrivanie.Value == Otkrivanie.Правое)
                 {
                     if (param.Nalichniki[(int)Raspolozhenie.Прав] > 0)
                         return "C1_(50)PS_" + param.Num;
-                    else
-                        return "C2_(50)PS_" + param.Num;
+                    return "C2_(50)PS_" + param.Num;
                 }
-                else
-                    return "C3_(50)PS_" + param.Num;
+                return "C3_(50)PS_" + param.Num;
+
             case 4:
                 if (param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
                 {
                     if (param.Nalichniki[(int)Raspolozhenie.Верх] > 0)
                         return "C1_(50)UP_" + param.Num;
-                    else
-                        return "C2_(50)UP_" + param.Num;
+                    return "C2_(50)UP_" + param.Num;
                 }
-                else
-                    return "C3_(50)UP_" + param.Num;
+                return "C3_(50)UP_" + param.Num;
+
             case 5:
                 if(IsPassivka)
                     return "ODLS2_ZPA_" + param.Num;
-                else
-                    return "ODLS1_ZP__" + param.Num;
+                return "ODLS1_ZP__" + param.Num;
+
             case 6:
                 if (IsPassivka)
                     return "ODLS2_PP__" + param.Num;
-                else
-                    return "ODLS1_PP__" + param.Num;
+                return "ODLS1_PP__" + param.Num;
+
             case 7:
                 return "ODLS2_ZPP_" + param.Num;
+
             case 8:
                 if (param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
                 {
                     if (param.Nalichniki[(int)Raspolozhenie.Ниж] > 0)
                         return "C1_(50)DS_" + param.Num;
-                    else
-                        return "C2_(50)DS_" + param.Num;
+                    return "C2_(50)DS_" + param.Num;
                 }
-                else
-                    return "C3_(50)DS_" + param.Num;
+                return "C3_(50)DS_" + param.Num;
+
             case 9:
                 return "(50)POR" + Porog + "_" + param.Num;
+
             default:
                 return "";
         }
@@ -570,6 +615,12 @@ public class ODL : IODL
             return 0;
         }
     }
+
+    public string ZamokName => zamokName;
+
+    public bool CM => cm;
+    public bool Suv => suv;
+    public string RuchkaName => ruchkaName;
     public short Zamok_OtPola
     {
         get { return ZamokOtPola; }
@@ -644,5 +695,46 @@ public class ODL : IODL
         get { return double.Parse(ini.ReadKey("Stoyki", "ODL_D_ANKER")); }
     }
     public short Porog => param.Porog.Kod;
-    public double Porog_Length => _Width - 60;
+    public double Porog_Length => 
+        _Width - double.Parse(ini.ReadKey("Porog", "ODL_Por_koef"));
+
+    public double Porog_Width => 
+        double.Parse(ini.ReadKey("Porog", $"ODL_Por_{Porog}"));
+
+    public bool IsTorcevoyShpingalet(short pos)
+    {
+        switch (pos)
+        {
+            case 0:
+                return WPassiv > 0;
+            case 1:
+                return WPassiv > 0 && Porog > 0;
+            default:
+                return false;
+        }
+    }
+
+    public double TorcevoySpingaletOtKraya => TorcShpingalet;
+
+    public double TorcevoySpingaletOtstup(short pos)
+    {
+        if (!IsTorcevoyShpingalet(pos))
+            return 0;
+
+        switch (pos)
+        {
+            case 0:
+                if (Otkrivanie == Otkrivanie.Левое || Otkrivanie == Otkrivanie.Правое)
+                    return double.Parse(ini.ReadKey("Torcevoy", "ODL_OTZ_C1"));
+                return double.Parse(ini.ReadKey("Torcevoy", "ODL_OTZ_C3"));
+            case 1:
+                if (Otkrivanie == Otkrivanie.ЛевоеВО || Otkrivanie == Otkrivanie.ПравоеВО)
+                    return double.Parse(ini.ReadKey("Torcevoy", "ODL_OTZ_P25_VO"));
+                return double.Parse(ini.ReadKey("Torcevoy", $"ODL_OTZ_P{Porog}"));
+        }
+
+        return 0;
+    }
+
+    public int FileCount => IsPassivka ? 8 : 7;
 }

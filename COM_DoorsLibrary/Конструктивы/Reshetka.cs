@@ -1,15 +1,19 @@
 ﻿using System;
+using COM_DoorsLibrary;
 using static DM;
 
 internal class Reshetka
 {
-    private readonly short ROtPola, RVir, k;
+    private readonly short ROtPola, RVir, k, stvorkiCount;
     private readonly double ROtstup, ROtKraya, WLL, WVL;
+    private readonly StvorkaDM onStvorka;
     private readonly ReshParam reshParam;
 
     public Reshetka(ref DMParam param, short num, StvorkaDM stvorka)
     {
+        onStvorka = stvorka;
         reshParam = param.Resh[num];
+        stvorkiCount = param.WAktiv.Value > 0 ? (short)2 : (short)1;
         if (param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
         {
             if (param.Nalichniki[(short)Raspolozhenie.Верх] == 0)
@@ -127,6 +131,28 @@ internal class Reshetka
     {
         get { return ROtKraya; }
     }
+    public double OtLeftKrayaLista(int list)
+    {
+        if (list == 0)
+        {
+            if (onStvorka.Position == Stvorka.Активная)
+                return (WLL - reshParam.Width) / 2;
+            return (WLL - reshParam.Width - onStvorka.RightGib + onStvorka.LeftGib) / 2;
+        }
+        double rast;
+        if (onStvorka.Position == Stvorka.Активная)
+        {
+            rast = ((WVL - reshParam.Width) / 2) + 0.5;
+            if (onStvorka.ListThick(list).EqualsDouble(2) & stvorkiCount == 2)
+                rast -= 53.05;
+            return rast;
+        }
+        rast = (onStvorka.VList_Width - 41 - onStvorka.Coefficient - reshParam.Width + 44) / 2;
+        if (onStvorka.ListThick(list).EqualsDouble(2))
+            rast -= 3;
+        return rast;
+    }
+
     public eReshetka Type
     {
         get { return reshParam.Type; }

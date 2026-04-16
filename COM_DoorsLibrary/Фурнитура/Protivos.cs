@@ -12,14 +12,16 @@ internal class Protivos
         ini = new IniFile(cons.DIR_CONS_FURNIT + "\\Protivos.ini");
         short koef62 = cons.ST62 & cons.CompareKod(param.Kod, "ДМ", "(62)") ? short.Parse(iniDM.ReadKey("Koef", "KOEF_62")) : (short)0;
 
-        _otKraya = cons.CompareKod(param.Kod, "ДМ", "(70)") ? double.Parse(iniDM.ReadKey("Furnitura", "DM_PROTIVOS_OT_KRAYA_90")) : 
-                                                              double.Parse(iniDM.ReadKey("Furnitura", "DM_PROTIVOS_OT_KRAYA")) + (koef62 / 2);
+        _otKraya = cons.CompareKod(param.Kod, "ДМ", "(70)") 
+            ? double.Parse(iniDM.ReadKey("Furnitura", "DM_PROTIVOS_OT_KRAYA_90")) 
+            : double.Parse(iniDM.ReadKey("Furnitura", "DM_PROTIVOS_OT_KRAYA")) + (koef62 / 2);
+
         if (num == 0)
         {
             if (param.Protivos == 1)
             {
-                if (param.Height <= 1250)
-                    _otPola = (short)(param.Height / 2 + 100);
+                if (param.Height < 1500)
+                    _otPola = (short)(param.Height / 2);
                 else
                     _otPola = short.Parse(ini.ReadKey("Protivos", "OT_POLA_DO_1_1"));
             }
@@ -28,15 +30,12 @@ internal class Protivos
         }
         else
         {
-            if (param.Height <= 1250)
+            if (param.Height < 1500)
                 _otPola = (short)(param.Height - 200);
-            else
-                _otPola = param.Height < 1800 & param.Height >= 1600
-                    ? short.Parse(ini.ReadKey("Protivos", "OT_POLA_DO_2_1800"))
-                    : param.Height < 1600
-                        ? short.Parse(ini.ReadKey("Protivos", "OT_POLA_DO_2_1600"))
-                        : short.Parse(ini.ReadKey("Protivos", "OT_POLA_DO_2_1900"));
         }
+
+        if (param.Otkrivanie.Value == Otkrivanie.ЛевоеВО || param.Otkrivanie.Value == Otkrivanie.ПравоеВО)
+            _otPola -= 5;
     }
 
     public short OtPola

@@ -58,19 +58,19 @@ public interface ILM
 
     [DispId(13)]
     [Description("Возвращает высоту лицевого листа изделия.")]
-    short LicevoyList_Height{get;}
+    double LicevoyList_Height{get;}
 
     [DispId(14)]
     [Description("Возвращает ширину лицевого листа изделия по его створке.")]
-    short LicevoyList_Width(Stvorka stvorka);
+    double LicevoyList_Width(Stvorka stvorka);
 
     [DispId(15)]
     [Description("Возвращает высоту внутреннего листа изделия.")]
-    short VnutrenniyList_Height{get;}
+    double VnutrenniyList_Height{get;}
 
     [DispId(16)]
     [Description("Возвращает ширину внутреннего листа изделия по его створке.")]
-    short VnutrenniyList_Width(Stvorka stvorka);
+    double VnutrenniyList_Width(Stvorka stvorka);
 
     [DispId(17)]
     [Description("Возвращает высоту стойки по ее расположению в изделии.")]
@@ -111,13 +111,17 @@ public interface IELM
 [Description("Класс расчета люков.")]
 public class LM : ILM
 {
-    private short _WAktiv, _WPassiv, _HLL, _HVL, _WLLAS, _WVLAS, _WLLPS, _WVLPS, _HZPS, _HUDS, _protivos;
+    private double _WAktiv, _WPassiv, _HLL, _HVL, _WLLAS, _WVLAS, _WLLPS, _WVLPS, _HZPS, _HUDS, _protivos;
     private double _WZS, _WPS, _WUS, _WDS;
     private double _glubST, _glubPR;
     private short _koef62; //_stKoef62;
     private string _ERRORS, _PROBLEMS;
     private const short leftGib = 9, rightGib = 9, topGib = 9, bottomGib = 9;
     private double llThick = 1.2, vlThick = 1.2;
+    private double virezPritvor = 65.6;
+    private double zamokOtvOtstup;
+
+    private readonly TorcevayaPlastina[] torceviePlastini = new TorcevayaPlastina[2];
 
     private Zamok _zamok;
     private Ruchka _ruchka;
@@ -261,11 +265,54 @@ public class LM : ILM
         else
             _WDS = razv + minNal;
 
-        _glubST = double.Parse(ini.ReadKey("LM", "LM_ST_V_GLUB")) + _koef62;
-        _glubPR = double.Parse(ini.ReadKey("LM", "LM_ST_G_GLUB")) + _koef62;
-        
-        if(param.Zamok[0].Kod > 0)
+        _glubST = IsNO 
+            ? double.Parse(ini.ReadKey("LM", "LM_ST_V_GLUB")) + _koef62 
+            : double.Parse(ini.ReadKey("LM", "LM_ST_V_GLUB_K3")) + _koef62;
+        _glubPR = IsNO 
+            ? double.Parse(ini.ReadKey("LM", "LM_ST_G_GLUB")) + _koef62 
+            : double.Parse(ini.ReadKey("LM", "LM_ST_G_GLUB_K3")) + _koef62;
+
+        var tpVal = ini.ReadKey("TorcevayaPlastina", "LM_TP_Sw").Equals("1") && !IsPassivka;
+
+        if (tpVal)
+        {
+            var key = _koef62 > 0 ? "LM_TP_W_62" : "LM_TP_W_53";
+            var width = double.Parse(ini.ReadKey("TorcevayaPlastina", key));
+
+            key = _koef62 > 0 ? "LM_TP_Otstup_62" : "LM_TP_Otstup_53";
+            var otsP = double.Parse(ini.ReadKey("TorcevayaPlastina", key));
+
+            var otsZ = otsP;
+            if (param.WAktiv.Value > 0)
+            {
+                key = _koef62 > 0 ? "LM_TP_Otstup2_62" : "LM_TP_Otstup2_53";
+                otsZ = double.Parse(ini.ReadKey("TorcevayaPlastina", key));
+            }
+
+            if (_HVL + width - param.Thick_VL <= cons.LIST_HIGHT)
+                torceviePlastini[0] = new TorcevayaPlastina(width - param.Thick_VL, _WVLAS - otsP - otsZ, otsP, otsZ, param.Thick_VL > 1.9);
+
+            if (_HVL + (width - param.Thick_VL) * 2 <= cons.LIST_HIGHT)
+                torceviePlastini[1] = new TorcevayaPlastina(width - param.Thick_VL, _WVLAS - otsP - otsZ, otsP, otsZ, param.Thick_VL > 1.9);
+        }
+
+        if (param.Zamok[0].Kod > 0)
             _zamok = new Zamok(0, ref param, ref cons);
+        switch (Zamok_Kod)
+        {
+            case (int)ZamokNames.ПП:
+                zamokOtvOtstup = IsNO ? 118.19 + _koef62/2 : 68.25 + _koef62/2;
+                break;
+
+            case (int)ZamokNames.Просам_ЗВ_8:
+                zamokOtvOtstup = IsNO ? 119.15 + _koef62 / 2 : 69.21 + _koef62 / 2;
+                break;
+
+            case (int)ZamokNames.Меттем_842:
+                zamokOtvOtstup = IsNO ? 117.95 + _koef62 / 2 : 68.01 + _koef62 / 2;
+                break;
+        }
+
         _protivos = (short)(short.Parse(ini.ReadKey("LM", "LM_PROTIVOS")) + _koef62 / 2);
 
         if (param.RuchkaAS.Length > 0 && param.RuchkaAS[0].Kod > 0)
@@ -342,14 +389,14 @@ public class LM : ILM
     public short Stvorka_Width(Stvorka stvorka)
     {
         return stvorka == Stvorka.Активная 
-            ? _WAktiv 
-            : _WPassiv;
+            ? (short)_WAktiv.Round() 
+            : (short)_WPassiv.Round();
     }
-    public short LicevoyList_Height => 
+    public double LicevoyList_Height => 
         llThick.EqualsDouble(2) 
                 ? (short)(_HLL + 2) 
                 : _HLL;
-    public short LicevoyList_Width(Stvorka stvorka)
+    public double LicevoyList_Width(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
             return llThick.EqualsDouble(2) 
@@ -359,8 +406,8 @@ public class LM : ILM
             ? (short)(_WLLPS + 2) 
             : _WLLPS;
     }
-    public short VnutrenniyList_Height => _HVL;
-    public short VnutrenniyList_Width(Stvorka stvorka)
+    public double VnutrenniyList_Height => _HVL;
+    public double VnutrenniyList_Width(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
             return vlThick.EqualsDouble(2) 
@@ -372,36 +419,71 @@ public class LM : ILM
             : _WVLPS;
     }
 
-    public short GetGib(Raspolozhenie side)
+    public double TorcShpingalet_OtKraya => 
+        17.7 + _koef62 / 2;
+
+    public double TorcShpingalet_OtvOtKraya => IsPassivka 
+        ? IsNO 
+            ? _WAktiv + 32 
+            : _WAktiv + 35.5 + 34.8
+        : 0;
+
+    public double TorcShpingalet_OtvOtstup => IsNO ? 110.795 : 34;
+
+    public double GetGib(Raspolozhenie side, Stvorka stvorka)
     {
         switch (side)
         {
             case Raspolozhenie.Лев:
-                return llThick.EqualsDouble(2) 
-                    ? (short)(leftGib + 1) 
-                    : leftGib;
+                if (stvorka == Stvorka.Активная)
+                    return llThick.EqualsDouble(2)
+                        ? leftGib + 1
+                        : leftGib;
+                else
+                    return cons.CompareKod(param.Kod, "(62)") 
+                        ? llThick.EqualsDouble(2) 
+                            ? 190 
+                            : 83
+                        : llThick.EqualsDouble(2) 
+                            ? 181 
+                            : 75;
             case Raspolozhenie.Прав:
                 return llThick.EqualsDouble(2)
-                    ? (short)(rightGib + 1)
+                    ? rightGib + 1
                     : rightGib;
             case Raspolozhenie.Верх:
                 return llThick.EqualsDouble(2)
-                    ? (short)(topGib + 1)
+                    ? topGib + 1
                     : topGib;
             case Raspolozhenie.Ниж:
                 return llThick.EqualsDouble(2)
-                    ? (short)(bottomGib + 1)
+                    ? bottomGib + 1
                     : bottomGib;
             default:
                 throw new ArgumentOutOfRangeException(nameof(side), side, null);
         }
     }
 
+    public double VirezPritvorWidth => 
+        cons.CompareKod(param.Kod, "(62)") 
+            ? (llThick.EqualsDouble(2) 
+                ? virezPritvor + _koef62 + 1 
+                : virezPritvor + _koef62) 
+            : (llThick.EqualsDouble(2) 
+                ? virezPritvor + 1 
+                : virezPritvor);
+
+    public bool IsTorcevayaPlastina(short pos) => 
+        torceviePlastini[pos] != null;
+
+    public TorcevayaPlastina TorcevayaPlastina(short pos) => 
+        torceviePlastini[pos];
+
     public short Stoyka_Height(Raspolozhenie pos)
     {
             return pos == Raspolozhenie.Лев | pos == Raspolozhenie.Прав 
-                ? _HZPS 
-                : _HUDS;
+                ? (short)_HZPS.Round() 
+                : (short)_HUDS.Round();
     }
     public double Stoyka_Razvertka(Raspolozhenie pos)
     {
@@ -424,11 +506,29 @@ public class LM : ILM
             ? _glubPR
             : _glubST;
     }
+
+    public bool IsNO => Otkrivanie == Otkrivanie.Левое || Otkrivanie == Otkrivanie.Правое;
+    public double Anker_Otstup => 
+        IsNO ? 109.55 + _koef62/2 : 78.25 + _koef62/2;
+    public bool IsZamkovayaStoyka(Raspolozhenie pos)
+    {
+        switch (pos)
+        {
+            case Raspolozhenie.Лев:
+                return !IsPassivka & (Otkrivanie == Otkrivanie.Правое || Otkrivanie == Otkrivanie.ПравоеВО);
+            case Raspolozhenie.Прав:
+                return !IsPassivka & (Otkrivanie == Otkrivanie.Левое || Otkrivanie == Otkrivanie.ЛевоеВО);
+            default:
+                return false;
+        }
+    }
     public short Zamok_Kod => _zamok?.Datas.Kod ?? (short)0;
     public short Ruchka_Kod => _ruchka?.Kod ?? (short)0;
     public short Zadvizhka_Kod => _zadvizhka?.Kod ?? (short)0; 
     public ZamokDatas Zamok => _zamok.Datas;
-    public short Protivos_OtKraya => _protivos;
+    public double Zamok_OtvOtstup => zamokOtvOtstup;
+    public RuchkaParam Ruchka => _ruchka.Param;
+    public double Protivos_OtKraya => _protivos;
     public ZadvizhkaDatas Zadvizhka => _zadvizhka.Datas;
     public double Zadvizhka_Vertushok_OtKraya
     {
@@ -452,4 +552,9 @@ public class LM : ILM
             return 250;
         }
     }
+
+    public int Zadvizhka_OnList =>
+        param.Otkrivanie.Value == Otkrivanie.Левое || param.Otkrivanie.Value == Otkrivanie.Правое 
+            ? 0 
+            : 1;
 }

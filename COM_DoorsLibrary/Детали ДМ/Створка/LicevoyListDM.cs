@@ -2,11 +2,17 @@
 
 internal class LicevoyListDM
 {
-    private readonly double _height, _width, virezPritvorHeight, virezPritvorWidth, TSotKraya;
+    private readonly double _height,
+        _width,
+        virezUpPritvorHeight,
+        virezPritvorHeight,
+        virezPritvorWidth,
+        TSotKraya,
+        thick;
     private readonly short vstavka, _rightGib, _leftGib, _upGib, kompVir, koef90, koef62;
     private readonly bool downGib, UpTShpin, DownTShpin, SekPl, GND;
     
-public LicevoyListDM(ref DMParam param, double hStv, double wStv, Stvorka pos, ref Constants cons, ref IniFile iniDM)
+    public LicevoyListDM(ref DMParam param, double hStv, double wStv, Stvorka pos, ref Constants cons, ref IniFile iniDM)
     {
         koef90 = cons.CompareKod(param.Kod, "ДМ", "(70)") ? short.Parse(iniDM.ReadKey("Koef", "KOEF_90")) : (short)0;
         koef62 = cons.ST62 & cons.CompareKod(param.Kod, "ДМ", "(62)") ? short.Parse(iniDM.ReadKey("Koef", "KOEF_62")) : (short)0;
@@ -14,6 +20,7 @@ public LicevoyListDM(ref DMParam param, double hStv, double wStv, Stvorka pos, r
         _width = pos == Stvorka.Активная ? !(param.WAktiv.Value == 0d) ? wStv + double.Parse(iniDM.ReadKey("List", "DM2_K_WLL_AS")) :
                                                                   wStv + double.Parse(iniDM.ReadKey("List", "DM1_K_WLL")) : 
                                            wStv + double.Parse(iniDM.ReadKey("List", "DM2_K_WLL_PS")) + (koef90 / 2) + koef62;
+        thick = param.Thick_LL;
         switch (param.Porog.Kod) {
             case 40:
             case 41:
@@ -41,10 +48,14 @@ public LicevoyListDM(ref DMParam param, double hStv, double wStv, Stvorka pos, r
                 break;
         }
         _height += param.Thick_LL == 2 ? double.Parse(iniDM.ReadKey("Koef", "K_HLL_T2")) : 0;
-        _width += param.Thick_LL == 2 ? pos == Stvorka.Активная ? param.WAktiv.Value == 0d ? double.Parse(iniDM.ReadKey("Koef", "DM1_K_WLL_T2")) :
-                                                                                      double.Parse(iniDM.ReadKey("Koef", "DM2_K_WLA_T2")) :
-                                                                  koef90 == 0 ? double.Parse(iniDM.ReadKey("Koef", "DM2_K_WLP_T2")) :
-                                                                                double.Parse(iniDM.ReadKey("Koef", "DM2_K_WLP_T2_90")) : 0;
+        _width += param.Thick_LL == 2 
+            ? pos == Stvorka.Активная 
+                ? param.WAktiv.Value == 0d 
+                    ? double.Parse(iniDM.ReadKey("Koef", "DM1_K_WLL_T2")) 
+                    : double.Parse(iniDM.ReadKey("Koef", "DM2_K_WLA_T2")) 
+                : koef90 == 0 ? double.Parse(iniDM.ReadKey("Koef", "DM2_K_WLP_T2")) 
+                    : double.Parse(iniDM.ReadKey("Koef", "DM2_K_WLP_T2_90")) 
+            : 0;
         kompVir = short.Parse(iniDM.ReadKey("Virez", "DM_KOMPENS_VIREZ"));
         _leftGib = param.Thick_LL == 2 ? pos == Stvorka.Активная ? short.Parse(iniDM.ReadKey("Gib", "DM_BOK_GIB_LA_T2")) :
                                                                   (short)(double.Parse(iniDM.ReadKey("Gib", "DM_BOK_GIB_LP_T2")) + koef62 + (koef90 / 2)) : 
@@ -62,6 +73,9 @@ public LicevoyListDM(ref DMParam param, double hStv, double wStv, Stvorka pos, r
             vstavka = (short)(short.Parse(iniDM.ReadKey("List", "DM_VSTAVKA_PS")) + (koef62 > 0 ? koef62 + 1 : 0));
         else
             vstavka = 0;
+
+        virezUpPritvorHeight = double.Parse(iniDM.ReadKey("Virez", "DM_PRITVOR_POROG")) + UpGib;
+
         if (param.Porog.Kod == 0 | param.Porog.Kod == 2)
         {
             virezPritvorHeight = 0.001;
@@ -114,6 +128,9 @@ public LicevoyListDM(ref DMParam param, double hStv, double wStv, Stvorka pos, r
     {
         get { return _upGib; }
     }
+
+    public double VirezPoPritvoru_Height => 
+        virezUpPritvorHeight;
     public double VirezPoPorogu_Height
     {
         get { return virezPritvorHeight; }
@@ -154,4 +171,6 @@ public LicevoyListDM(ref DMParam param, double hStv, double wStv, Stvorka pos, r
     {
         get => vstavka;
     }
+
+    public double Thick => thick;
 }

@@ -42,6 +42,8 @@ namespace COM_DoorsLibrary
                 case 0:
                 case 20:
                     return "N00";
+                case 30:
+                    return "N30";
                 case 40:
                     return "N40";
                 case 70:
@@ -60,12 +62,14 @@ namespace COM_DoorsLibrary
                     return "N50";
                 case 80:
                     return "N80";
+                case 90:
+                    return "N90";
                 default:
                     throw new ArgumentException($"{Data.Num} - наличник {nalichnik} является не стандартным!");
             }
         }
 
-        private protected short GetNalichnik(bool zamkovaya = true)
+        public short GetNalichnik(bool zamkovaya = true)
         {
             if (Data.Otkrivanie == Otkrivanie.Левое || Data.Otkrivanie == Otkrivanie.ЛевоеВО)
                 return zamkovaya 
@@ -87,6 +91,11 @@ namespace COM_DoorsLibrary
                     return "POR_20";
                 case (short)PorogNames.Порог_26_плоский:
                     return "POR_26";
+                case (short)PorogNames.Порог_14:
+                    return "POR_14";
+                case (short)PorogNames.Порог_25_скос:
+                case (short)PorogNames.Порог_25:
+                    return "POR_25";
                 default:
                     throw new ArgumentException(
                         $"{Data.Num} - Порог {Data.Porog} для {ModelName} не определен");
@@ -128,6 +137,7 @@ namespace COM_DoorsLibrary
             return tmp;
         }
 
+        public abstract double LL_OtPola { get; }
         public abstract double LL_Height { get; }
         public abstract double LL_Width { get; }
 
@@ -137,11 +147,18 @@ namespace COM_DoorsLibrary
         public abstract double VP_Length { get; }
         public abstract double GP_Length { get; }
         public abstract double MP_Length { get; }
+        public abstract double ProtivosOtstup { get; }
 
         public abstract double VS_Length { get; }
         public abstract double GS_Length { get; }
 
         public abstract double RZK_Length { get; }
+
+        public abstract double POR_Pered { get; }
+
+        public abstract double POR_Zad { get; }
+
+        public abstract double RZP_Lengnth { get; }
 
         public abstract double Nalichnik(Raspolozhenie pos);
 
@@ -186,6 +203,7 @@ namespace COM_DoorsLibrary
         Притолока,
         Порог,
         РЖК_Замковая,
-        РЖК_Петлевая
+        РЖК_Петлевая,
+        РЖ_полотна
     }
 }

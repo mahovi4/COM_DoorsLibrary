@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace COM_DoorsLibrary
+﻿namespace COM_DoorsLibrary
 {
-    public sealed class KV01c : KVD
+    public sealed class KV10 : KVD
     {
-        public override string Name => "КВ01c";
-        public override string Description => "Комфорт-P";
-        public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[KOMPF_S]";
-        public override double LL_OtPola => 16;
+        public override string Name => "КВ10";
+        public override string Description => "КВ-1(70)";
+        public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[KВ-1(70)]";
+        public override double LL_OtPola => GetLlOtPola(Data.Porog);
         public override double LL_Height => Data.Height - GetPorCoefficient(Data.Porog);
         public override double LL_Width => Data.Width - 34;
         public override double VL_Height => 0;
@@ -25,11 +23,11 @@ namespace COM_DoorsLibrary
 
         public override double Nalichnik(Raspolozhenie pos)
         {
-            switch (Data.Nalichniki[(short) pos])
+            switch (Data.Nalichniki[(short)pos])
             {
                 case 60:
                 case 70:
-                    if(pos == Raspolozhenie.Лев || pos == Raspolozhenie.Прав)
+                    if (pos == Raspolozhenie.Лев || pos == Raspolozhenie.Прав)
                         return 76.15;
                     return 76.61;
                 case 0:
@@ -47,24 +45,24 @@ namespace COM_DoorsLibrary
             }
         }
 
-        public KV01c(TableData data, Constants cons)
+        public KV10(TableData data, Constants cons)
             : base(data, cons)
         {
-            var template = TemplateFileName.Substring(0, TemplateFileName.Length - 1);
+            var template = TemplateFileName;
 
-            Parts.Add(new KVDPartInfo(Command_KVD.Лицевой_лист, "[KOMPH]_L.SLDPRT", $"{template}{GetOtkrivanieKod()}_LL"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Замковой_профиль, "[KOMPH]_Z_P_PROF.SLDPRT", $"{template}_ZP"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Петлевой_профиль, "[KOMPH]_Z_P_PROF.SLDPRT", $"{template}_PP"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Верхний_профиль, "[KOMPH]_U_PROF.SLDPRT", $"{template}_UP"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Нижний_профиль, "[KOMPH]_D_PROF.SLDPRT", $"{template}_DP"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Монтажный_профиль_нижний, "[KOMPH]_M_PROF.SLDPRT", $"{template}_TP"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Замковая_стойка, "[KOMPH]_K1_Z_P.SLDPRT", $"{template}_{GetNalichikKod(GetNalichnik())}{GetOtkrivanieKod()}_{GetPositionKod()}_ZS"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Петлевая_стойка, "[KOMPH]_K1_Z_P.SLDPRT", $"{template}_{GetNalichikKod(GetNalichnik(false))}{GetOtkrivanieKod()}_{GetPositionKod(false)}_PS"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Притолока, "[KOMPH]_G.SLDPRT", $"{template}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}{GetOtkrivanieKod()}_US"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Порог, "[KOMPH]_POR.SLDPRT", $"{template}_{GetOtkrivanieKod()}{GetPorogKod()}"));
-            Parts.Add(new KVDPartInfo(Command_KVD.РЖК_Замковая, "[KOMPH]_RGK.SLDPRT", $"{template}_ZR"));
-            Parts.Add(new KVDPartInfo(Command_KVD.РЖК_Петлевая, "[KOMPH]_RGK.SLDPRT", $"{template}_PR"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Монтажный_профиль_петлевой, "[KOMPH_P]_BZU.SLDPRT", $"{template}_BZU"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Лицевой_лист, "[ДК-1(70)]_L.SLDPRT", $"{template}{GetOtkrivanieKod()}_LL"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Замковой_профиль, "[ДК-1(70)]_Z_P_PROF.SLDPRT", $"{template}_ZP"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Петлевой_профиль, "[ДК-1(70)]_Z_P_PROF.SLDPRT", $"{template}_PP"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Верхний_профиль, "[ДК-1(70)]_U_PROF.SLDPRT", $"{template}_UP"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Нижний_профиль, "[ДК-1(70)]_D_PROF.SLDPRT", $"{template}_DP"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Монтажный_профиль_нижний, "[ДК-1(70)]_M_PROF.SLDPRT", $"{template}_TP"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Замковая_стойка, "[ДК-1(70)]_K1_Z_P.SLDPRT", $"{template}_{GetNalichikKod(GetNalichnik())}{GetOtkrivanieKod()}_{GetPositionKod()}_ZS"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Петлевая_стойка, "[ДК-1(70)]_K1_Z_P.SLDPRT", $"{template}_{GetNalichikKod(GetNalichnik(false))}{GetOtkrivanieKod()}_{GetPositionKod(false)}_PS"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Притолока, "[ДК-1(70)]_G.SLDPRT", $"{template}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}{GetOtkrivanieKod()}_US"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Порог, "[ДК-1(70)]_POR.SLDPRT", $"{template}_{GetOtkrivanieKod()}{GetPorogKod()}"));
+            Parts.Add(new KVDPartInfo(Command_KVD.РЖК_Замковая, "[ДК-1(70)]_RGK.SLDPRT", $"{template}_ZR"));
+            Parts.Add(new KVDPartInfo(Command_KVD.РЖК_Петлевая, "[ДК-1(70)]_RGK.SLDPRT", $"{template}_PR"));
+            Parts.Add(new KVDPartInfo(Command_KVD.РЖ_полотна, "[ДК-1(70)]_RZP.SLDPRT", $"{template}_RZP"));
         }
 
         private static double GetPorCoefficient(short porogKod)
@@ -80,6 +78,7 @@ namespace COM_DoorsLibrary
                     return 24;
             }
         }
+
         private static double GetPorVPCoefficient(short porogKod)
         {
             switch (porogKod)
@@ -101,10 +100,10 @@ namespace COM_DoorsLibrary
                 case (short)PorogNames.Порог_25_скос:
                 case (short)PorogNames.Порог_25:
                 case (short)PorogNames.Порог_14:
-                    return 91.15;
+                    return 91.15 - 7;
 
                 case (short)PorogNames.Порог_40:
-                    return 102.15;
+                    return 102.15 - 7;
 
                 default:
                     return 0;

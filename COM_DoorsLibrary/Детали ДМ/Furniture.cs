@@ -106,7 +106,7 @@ internal class Furniture
         {
             for (short i = 0; i < param.Protivos; i++)
             {
-                Protivos p = new Protivos(i, ref param, ref cons, ref iniDM);
+                var p = new Protivos(i, ref param, ref cons, ref iniDM);
                 _protivos.Add(p);
             }
         }
@@ -132,19 +132,22 @@ internal class Furniture
         }
 
         //Ответки под врезную антипанику в пассивной створке
-        if (param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1300 | 
-            param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1700A | 
-            param.RuchkaPS[0].Kod == (short)RuchkaNames.АП_DoorLock)
+        if (param.WAktiv.Value > 0)
         {
-            short count;
-            if (param.Porog.Kod == 2 | param.Porog.Kod == 0)
-                count = 1;
-            else
-                count = 2;
-            for (int i = 0; i < count; i++)
+            if (param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1300 |
+                param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1700A |
+                param.RuchkaPS[0].Kod == (short)RuchkaNames.АП_DoorLock)
             {
-                TorcShpingalet tsp = new TorcShpingalet(i, ref param, ref cons, ref iniDM);
-                _otvetkiAntipan.Add(new OtvAntipan(tsp.Otvetka_OtKraya, tsp.Otvetka_Otstup, tsp.Otvetka_Diam));
+                short count;
+                if (param.Porog.Kod == 2 | param.Porog.Kod == 0)
+                    count = 1;
+                else
+                    count = 2;
+                for (int i = 0; i < count; i++)
+                {
+                    TorcShpingalet tsp = new TorcShpingalet(i, ref param, ref cons, ref iniDM);
+                    _otvetkiAntipan.Add(new OtvAntipan(tsp.Otvetka_OtKraya, tsp.Otvetka_Otstup, tsp.Otvetka_Diam));
+                }
             }
         }
 
@@ -307,7 +310,7 @@ internal class Furniture
     {
         if (IsZamok(num))
         {
-            if (_param.EIS) 
+            if (_param.DopKontur) 
             {
                 if (_param.WAktiv.Value > 0)
                     return _zamok[num].OtTelaVA - double.Parse(_iniDM.ReadKey("Furnitura", "DM_ZAMOK_K_EIS2"));
@@ -681,6 +684,30 @@ internal class Furniture
         else
         {
             return 0;
+        }
+    }
+
+    public int Zadvizhka_OnList(short num)
+    {
+        if (IsZadvizhka(num))
+        {
+            return _zadvizhka[0].Datas.OnList;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    public double Zadvizhka_OtKrayaLP(short num)
+    {
+        if (IsZadvizhka(num))
+        {
+            return _zadvizhka[0].Datas.OtKrayaLP;
+        }
+        else
+        {
+            return -1;
         }
     }
 

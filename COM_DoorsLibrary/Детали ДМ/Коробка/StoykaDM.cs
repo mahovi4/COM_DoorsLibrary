@@ -42,9 +42,15 @@ internal class StoykaDM : DetalKorobkiDM
 
         //Стыковка стойки
         if(!(Type == 2) & (nalichniki[(short)Raspolozhenie.Верх] == 0 || param.Intek))
-            Stik = double.Parse(iniDM.ReadKey("Stoyki", "DM_STOYKI_STIK_K2"));
+            StikUp = double.Parse(iniDM.ReadKey("Stoyki", "DM_STOYKI_STIK_K2"));
         else
-            Stik = double.Parse(iniDM.ReadKey("Stoyki", "DM_STOYKI_STIK"));
+            StikUp = double.Parse(iniDM.ReadKey("Stoyki", "DM_STOYKI_STIK"));
+
+        //Стыковка стойки нижняя (при наличнике снизу)
+        if (!(Type == 2) & (nalichniki[(short)Raspolozhenie.Ниж] == 0))
+            StikDwn = double.Parse(iniDM.ReadKey("Stoyki", "DM_STOYKI_STIK_K2"));
+        else
+            StikDwn = double.Parse(iniDM.ReadKey("Stoyki", "DM_STOYKI_STIK"));
 
         //Глубина стойки
         if (param.Otkrivanie.Value == Otkrivanie.Левое || param.Otkrivanie.Value == Otkrivanie.Правое) 
@@ -225,35 +231,33 @@ internal class StoykaDM : DetalKorobkiDM
 
         //Расположение анкерных отверстий по высоте
         Rast1Anker = 200;
-        if (param.Height <= 1250)
-        {
-            Rast2Anker = (short) (param.Height / 2 + 100);
-            Rast3Anker = (short) (param.Height - 200);
-        }
+        if (param.Height < 1500)
+            Rast2Anker = (short) (param.Height / 2);
         else
         {
             Rast2Anker = 1070;
-            if (param.Height >= 1800)
-            {
-                Rast3Anker = 1650;
-            }
-            else if (param.Height < 1800 && param.Height > 1650)
-            {
-                Rast3Anker = 1450;
-            }
-            else if (param.Height <= 1650 && param.Height > 1400)
-            {
-                Rast3Anker = 1250;
-            }
-            else if (param.Height <= 1400 && param.Height >= 1300)
-            {
-                Rast3Anker = 1200;
-            }
-            else
-            {
-                Rast3Anker = 2000;
-            }
+            //if (param.Height >= 1800)
+            //{
+            //    Rast3Anker = 1650;
+            //}
+            //else if (param.Height < 1800 && param.Height > 1650)
+            //{
+            //    Rast3Anker = 1450;
+            //}
+            //else if (param.Height <= 1650 && param.Height > 1400)
+            //{
+            //    Rast3Anker = 1250;
+            //}
+            //else if (param.Height <= 1400 && param.Height >= 1300)
+            //{
+            //    Rast3Anker = 1200;
+            //}
+            //else
+            //{
+            //    Rast3Anker = 2000;
+            //}
         }
+        Rast3Anker = (short)(nalichniki[(short)Raspolozhenie.Ниж] > 0 ? param.Height - 100 : param.Height - 200);
 
         //Диаметры анкерных отверстий
         if (zSt) {
@@ -261,16 +265,34 @@ internal class StoykaDM : DetalKorobkiDM
             DAnker2 = double.Parse(iniDM.ReadKey("Furnitura", "DM_ANKER_D"));
             DAnker3 = DAnker1;
         } else {
-            if (param.Protivos == 2) {
+            if (param.Protivos == 2)
+            {
                 DAnker1 = double.Parse(iniDM.ReadKey("Furnitura", "DM_PROTIVOS_D"));
                 DAnker2 = double.Parse(iniDM.ReadKey("Furnitura", "DM_ANKER_D"));
                 DAnker3 = DAnker1;
-            } else {
+            } 
+            else if(param.Protivos == 3) 
+            {
+                DAnker1 = double.Parse(iniDM.ReadKey("Furnitura", "DM_PROTIVOS_D"));
+                DAnker2 = DAnker1;
+                DAnker3 = DAnker1;
+            } 
+            else 
+            {
                 DAnker1 = double.Parse(iniDM.ReadKey("Furnitura", "DM_ANKER_D"));
                 DAnker2 = double.Parse(iniDM.ReadKey("Furnitura", "DM_PROTIVOS_D"));
                 DAnker3 = DAnker1;
             }
         }
+
+        if (cons.CompareKod(param.Kod, "62"))
+            RZKWidth = short.Parse(iniDM.ReadKey("Stoyki", "DM_RZK_W_T62"));
+        else if (cons.CompareKod(param.Kod, "70"))
+            RZKWidth = short.Parse(iniDM.ReadKey("Stoyki", "DM_RZK_W_T90"));
+        else 
+            RZKWidth = short.Parse(iniDM.ReadKey("Stoyki", "DM_RZK_W_T53"));
+
+        RZKHeight = (short)(nalichniki[(short) Raspolozhenie.Ниж] > 0 ? Height + 100 : Height);
 
         //======================================================================================
         //-------------------------------------|ПРИСВОЕНИЕ ИМЕНИ|-------------------------------

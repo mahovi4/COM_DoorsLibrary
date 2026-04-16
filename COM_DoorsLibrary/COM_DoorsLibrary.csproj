@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>\\nas\ГК СТАЛЛ-ДООРС\отдел конструкторский\Автоматическая_обработка_заказов\SDK_ClassLibrary\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,6 +59,9 @@
     <Compile Include="DVM.cs" />
     <Compile Include="Framuga.cs" />
     <Compile Include="Shared.cs" />
+    <Compile Include="Вспомогательные\SharedExpression.cs" />
+    <Compile Include="Квартирки\KV11.cs" />
+    <Compile Include="Квартирки\KV10.cs" />
     <Compile Include="Квартирки\KV01c.cs" />
     <Compile Include="Квартирки\KV01b.cs" />
     <Compile Include="Квартирки\KV08.cs" />
@@ -94,7 +97,11 @@
     <Compile Include="Квартирки\KV01a.cs" />
     <Compile Include="Квартирки\KVDPartInfo.cs" />
     <Compile Include="Конструктивы\Okno.cs" />
+    <Compile Include="Конструктивы\OtsechkaOkna.cs" />
     <Compile Include="Конструктивы\Reshetka.cs" />
+    <Compile Include="Конструктивы\TorcevayaPlastina.cs" />
+    <Compile Include="Конструктивы\Отбойные пластины\OtboynayaPlastina.cs" />
+    <Compile Include="Конструктивы\Отбойные пластины\PositionPlastina.cs" />
     <Compile Include="Формы\MessForm.cs">
       <SubType>Form</SubType>
     </Compile>

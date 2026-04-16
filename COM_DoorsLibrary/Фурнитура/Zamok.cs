@@ -23,6 +23,7 @@ internal class Zamok
 
         zamokDatas.Kod = param.Zamok[num].Kod;
         zamokDatas.Name = ini.ReadKey("Names", "NAME");
+        zamokDatas.OtvName = $"{zamokDatas.Name} ответка";
         zamokDatas.VirezNames = new List<string>();
         zamokDatas.SketchNames = new List<string>();
         zamokDatas.SketchSufName = " " + ini.ReadKey("Names", "NAME_SUF_UP");
@@ -74,6 +75,8 @@ internal class Zamok
         zamokDatas.OtKrayaLA = double.Parse(ini.ReadKey(IniSection(true), "OT_KRAYA_LA"));
         zamokDatas.OtKrayaVA = double.Parse(ini.ReadKey(IniSection(false), "OT_KRAYA_VA"));
         zamokDatas.OtTelaVA = double.Parse(ini.ReadKey(IniSection(false), "OT_TELA_VA"));
+        zamokDatas.TeloOtKraya = zamokDatas.OtKrayaVA - zamokDatas.OtTelaVA;
+        zamokDatas.OtRuchkiDoTela = double.Parse(ini.ReadKey("1", "OtRuchkiDoTela"));
         zamokDatas.OtKrayaLP = double.Parse(ini.ReadKey(IniSection(true), "OT_KRAYA_LP"));
 
         if(param.RuchkaAS[0].Kod == (short)RuchkaNames.PB_1300 & param.RuchkaPS[0].Kod < 11)
@@ -81,9 +84,9 @@ internal class Zamok
             zamokDatas.OtKrayaVA += 2;
             zamokDatas.OtTelaVA += 2;
         }
-        if(param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1300 | 
+        if(num == 0 && (param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1300 | 
            param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1700A | 
-           param.RuchkaPS[0].Kod == (short)RuchkaNames.АП_DoorLock)
+           param.RuchkaPS[0].Kod == (short)RuchkaNames.АП_DoorLock))
         {
             if (cons.CompareKod(param.Kod, "(62)") & cons.ST62)
             {
@@ -158,6 +161,8 @@ internal class Zamok
                 return cons.DIR_CONS_ZAMOK + "\\Crit_7_RPM.ini";
             case (int)ZamokNames.ECO_GBS_81:
                 return cons.DIR_CONS_ZAMOK + "\\ECO_GBS_81.ini";
+            case (int)ZamokNames.Aler_AL250:
+                return cons.DIR_CONS_ZAMOK + "\\Aler_AL250.ini";
             default:
                 return "";
         }
@@ -270,6 +275,7 @@ internal class Zamok
     public double OtKrayaVA => zamokDatas.OtKrayaVA;
     public double OtKrayaLP => zamokDatas.OtKrayaLP;
     public double OtTelaVA => zamokDatas.OtTelaVA;
+    public double TeloOtKraya => zamokDatas.TeloOtKraya;
     public short OtPola => zamokDatas.OtPola;
     public double OtvOtPola => zamokDatas.OtvOtPola;
     public string Name => zamokDatas.Name;
@@ -286,6 +292,7 @@ public struct ZamokDatas
 {
     public short Kod;
     public string Name;
+    public string OtvName;
     public List<string> VirezNames;
     public List<string> SketchNames;
     public string SketchSufName;
@@ -296,10 +303,18 @@ public struct ZamokDatas
     public short OtPola;
     public double OtKrayaLA;
     public double OtKrayaVA;
+    public double TeloOtKraya;
+    public double OtRuchkiDoTela;
     public double OtKrayaLP;
     public double OtTelaVA;
     public double OtvOtPola;
     public int[] SovmestRuchki;
+
+    public bool IsSovmestima(short ruchkaKod)
+    {
+        return SovmestRuchki
+            .Any(kod => kod == ruchkaKod);
+    }
 }
 public struct Antipanika
 {

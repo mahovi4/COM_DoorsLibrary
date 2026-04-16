@@ -1,9 +1,14 @@
 ﻿
+using COM_DoorsLibrary;
+
 internal class Okno
 {
     private readonly short OHVirLL, OWVirLL, OHVirVL, OWVirVL, KoefLL, KoefVL, koef62;
-    private readonly double RastOtCrayaLL, RastOtCrayaVL, RastOtPola, koef90;
+    private readonly double RastOtCrayaLL, RastOtCrayaVL, RastOtPolaLL, RastOtPolaVL, koef90;
     private readonly OknoParam oknoParam;
+    private readonly bool otsechkiSw;
+    private readonly OtsechkaOkna[] otsechki = {null, null};
+    private readonly bool[] ramki = {false, false};
 
     private readonly IniFile ini;
 
@@ -34,6 +39,7 @@ internal class Okno
                 KoefVL = 0;
             }
         }
+
         OHVirLL = (short)(oknoParam.Steklo.Height + KoefLL);
         OWVirLL = (short)(oknoParam.Steklo.Width + KoefLL);
         OHVirVL = (short)(oknoParam.Steklo.Height + KoefVL);
@@ -41,14 +47,37 @@ internal class Okno
 
         var koef = param.Nalichniki[(int)Raspolozhenie.Верх] != 0 ? 15 : 0;
 
+        otsechkiSw = int.Parse(ini.ReadKey("Otsechki", "OK_Ots_Sw")) == 1;
+
+        var key = koef62 > 0 ? "OK_Ots_W_62" : koef90 > 0 ? "OK_Ots_W_70" : "OK_Ots_W_53";
+        var otsechkaTmp = double.Parse(ini.ReadKey("Otsechki", key));
+        var prosechkaWidth = double.Parse(ini.ReadKey("Otsechki", "OK_Ots_Pros_W"));
+
+        if (param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
+        {
+            otsechki[1] = new OtsechkaOkna(OWVirVL, OHVirVL, otsechkaTmp - param.Thick_VL, prosechkaWidth);
+
+            if (int.Parse(ini.ReadKey("Ramka", "OK_Rmk_Sw")) == 1)
+                ramki[1] = true;
+        }
+        else
+        {
+            otsechki[0] = new OtsechkaOkna(OWVirLL, OHVirLL, otsechkaTmp - param.Thick_LL, prosechkaWidth);
+
+            if (int.Parse(ini.ReadKey("Ramka", "OK_Rmk_Sw")) == 1)
+                ramki[0] = true;
+        }
+
+        var RastOtPola = 0.0;
+
         //Активная сворка
         if (stvorka.Position == Stvorka.Активная)
         {
             //Вертикальное расположение
             if (oknoParam.VertRaspol == VertRaspolozhenie.от_пола)
-                RastOtPola = (short)(oknoParam.PoVertikali - (KoefLL / 2));
+                RastOtPola = (short)(oknoParam.PoVertikali);
             else
-                RastOtPola = param.Height - OHVirLL - oknoParam.PoVertikali - double.Parse(ini.ReadKey("Okno", "OK_K_VERT")) - (KoefLL / 2) + koef;
+                RastOtPola = param.Height - OHVirLL - oknoParam.PoVertikali - double.Parse(ini.ReadKey("Okno", "OK_K_VERT")) + koef;
 
             //Горизонтальное расположение на лицевом
             if (oknoParam.GorRaspol == GorRaspolozhenie.по_центру)
@@ -56,14 +85,9 @@ internal class Okno
             else if (oknoParam.GorRaspol == GorRaspolozhenie.от_петлевого)
                 RastOtCrayaLL = stvorka.LeftGib + oknoParam.PoGorizontali - (KoefLL / 2);
             else
-            {
-                double k = param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое
-                    ? 0
-                    : (KoefLL / 2);
-                RastOtCrayaLL = stvorka.LList_Width - stvorka.RightGib - oknoParam.PoGorizontali - OWVirLL + k;
-            }
+                RastOtCrayaLL = stvorka.LList_Width - stvorka.RightGib - oknoParam.PoGorizontali - OWVirLL + (KoefLL / 2);
 
-            //Горизонтальное расположение на внутреннем
+                //Горизонтальное расположение на внутреннем
             if (oknoParam.GorRaspol == GorRaspolozhenie.по_центру)
             {
                 RastOtCrayaVL = ((stvorka.VList_Width - OWVirVL) / 2) + double.Parse(ini.ReadKey("Okno", "OK_K_GOR_VAS_C"));
@@ -74,7 +98,7 @@ internal class Okno
                 RastOtCrayaVL = oknoParam.PoGorizontali + double.Parse(ini.ReadKey("Okno", "OK_K_GOR_VAS_P")) + koef62 + koef90 - (KoefVL / 2);
             else
                 RastOtCrayaVL = stvorka.VList_Width - OWVirVL - oknoParam.PoGorizontali - 
-                    ((param.Thick_VL == 2 & param.WAktiv.Value > 0) 
+                    (param.Thick_VL.EqualsDouble(2) & param.WAktiv.Value > 0
                     ? double.Parse(ini.ReadKey("Okno", "OK_K_GOR_VAS_Z_T2")) 
                     : double.Parse(ini.ReadKey("Okno", "OK_K_GOR_VAS_Z"))) - koef62 - koef90 + (KoefVL / 2);
         }
@@ -83,9 +107,9 @@ internal class Okno
         {
             //Вертикальное расположение
             if (oknoParam.VertRaspol == VertRaspolozhenie.от_пола)
-                RastOtPola = oknoParam.PoVertikali - (KoefLL / 2);
+                RastOtPola = oknoParam.PoVertikali;
             else 
-                RastOtPola = param.Height - OHVirLL - oknoParam.PoVertikali - double.Parse(ini.ReadKey("Okno", "OK_K_VERT")) - (KoefLL / 2) + koef;
+                RastOtPola = param.Height - OHVirLL - oknoParam.PoVertikali - double.Parse(ini.ReadKey("Okno", "OK_K_VERT")) + koef;
 
             //Горизонтальное расположение на лицевом
             if (oknoParam.GorRaspol == GorRaspolozhenie.по_центру)
@@ -95,7 +119,7 @@ internal class Okno
                     RastOtCrayaLL += double.Parse(ini.ReadKey("Okno", "OK_K_GOR_LPS_C_T2"));
             }
             else if (oknoParam.GorRaspol == GorRaspolozhenie.от_петлевого)
-                RastOtCrayaLL = stvorka.LList_Width - stvorka.RightGib - OWVirLL - oknoParam.PoGorizontali;
+                RastOtCrayaLL = stvorka.LList_Width - stvorka.RightGib - OWVirLL - oknoParam.PoGorizontali + KoefLL / 2;
             else
                 RastOtCrayaLL = stvorka.LeftGib + oknoParam.PoGorizontali - (KoefLL / 2);
 
@@ -109,10 +133,13 @@ internal class Okno
             }
             else if (oknoParam.GorRaspol == GorRaspolozhenie.от_петлевого)
                 RastOtCrayaVL = stvorka.VList_Width - OWVirVL - oknoParam.PoGorizontali - 
-                                double.Parse(ini.ReadKey("Okno", "OK_K_GOR_VPS_P")) - koef62 - koef90 + (KoefVL / 2);
+                                double.Parse(ini.ReadKey("Okno", "OK_K_GOR_VPS_P")) - koef62 - koef90 + KoefVL / 2;
             else
                 RastOtCrayaVL = oknoParam.PoGorizontali + double.Parse(ini.ReadKey("Okno", "OK_K_GOR_VPS_Z")) - (KoefVL / 2);
         }
+        
+        RastOtPolaLL = RastOtPola - KoefLL/2;
+        RastOtPolaVL = RastOtPola - KoefVL/2;
     }
     public short HVirLL
     {
@@ -130,16 +157,17 @@ internal class Okno
     {
         get { return OWVirVL; }
     }
-    public double OtPola
-    {
-        get { return RastOtPola; }
-    }
-    public double OtCrayaLL
-    {
-        get { return RastOtCrayaLL; }
-    }
-    public double OtCrayaVL
-    {
-        get { return RastOtCrayaVL; }
-    }
+    public double OtPola(int pos) => 
+        pos==1 ? RastOtPolaVL : RastOtPolaLL;
+
+    public double OtCraya(int pos) => 
+        pos == 1 ? RastOtCrayaVL : RastOtCrayaLL;
+
+    public bool IsOtsechka(int pos) => 
+        otsechkiSw && otsechki[pos] != null && otsechki[pos].IsValid;
+
+    public OtsechkaOkna Otsechka =>
+        otsechki[0] == null ? otsechki[1] : otsechki[0];
+
+    public bool IsRamka(int pos) => ramki[pos];
 }

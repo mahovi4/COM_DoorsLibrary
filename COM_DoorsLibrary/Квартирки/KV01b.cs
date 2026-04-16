@@ -7,16 +7,22 @@ namespace COM_DoorsLibrary
         public override string Name => "КВ01b";
         public override string Description => "Комфорт-ВО";
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[KOMPF_VO]";
-        public override double LL_Height => Data.Height - 40;
+        public override double LL_OtPola => GetLlOtPola(Data.Porog);
+        public override double LL_Height => Data.Height - GetPorCoefficient(Data.Porog);
         public override double LL_Width => Data.Width + 129;
         public override double VL_Height => 0;
         public override double VL_Width => 0;
         public override double VP_Length => 0;
         public override double GP_Length => Data.Width - 95;
         public override double MP_Length => Data.Width - 95;
+        public override double ProtivosOtstup => Data.Porog == 40 ? 250 : 250 + 11;
         public override double VS_Length => Data.Height - 20;
         public override double GS_Length => Data.Width;
         public override double RZK_Length => Data.Height - 2;
+        public override double POR_Pered => GetPorPered(Data.Porog);
+        public override double POR_Zad => GetPorZad(Data.Porog);
+        public override double RZP_Lengnth => GetRzpLength(Data.Height, Data.Porog);
+
         public override double Nalichnik(Raspolozhenie pos)
         {
             switch (Data.Nalichniki[(short)pos])
@@ -45,35 +51,83 @@ namespace COM_DoorsLibrary
             Parts.Add(new KVDPartInfo(Command_KVD.Притолока, "[KOMPH_VO]_K3_MAC.SLDPRT", $"{template}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_VO_US"));
             Parts.Add(new KVDPartInfo(Command_KVD.Порог, "[KOMPH_VO]_K3_POR.SLDPRT", $"{template}_VO_POR"));
             Parts.Add(new KVDPartInfo(Command_KVD.РЖК_Замковая, "[KOMPH_VO]_RZK.SLDPRT", $"{template}_VO_RZK"));
+        }
 
-            //var llPath = $@"\{Name}\ЛИЦЕВОЙ ЛИСТ\{GetFurnituraKod(Com.ЛицевойЛист)}\{Data.Height}\{Data.Height}x{Data.Width}_[KOMPH]_VO_L.DXF";
+        private static double GetPorCoefficient(short porogKod)
+        {
+            switch (porogKod)
+            {
+                case (short)PorogNames.Порог_14:
+                case (short)PorogNames.Порог_25:
+                case (short)PorogNames.Порог_25_скос:
+                    return 29 + 4;
 
-            //var npPath = $@"\{Name}\ПРОФИЛИ\{Data.Width}_[KOMPH]_VO_NP.DXF";
-            //var ouPath = $@"\{Name}\ПРОФИЛИ\{Data.Width}_[KOMPH]_VO_OU.DXF";
-            //var odPath = $@"\{Name}\ПРОФИЛИ\{Data.Width}_[KOMPH]_VO_OD.DXF";
+                default:
+                    return 40;
+            }
+        }
 
-            //var zsPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\Вертикальные\Замковые\{GetFurnituraKod(Com.Профили)}\{Data.Height}_[KOMPH]_{GetNalichikKod(GetNalichnik())}_VO_Z.DXF";
-            //var psPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\Вертикальные\Петлевые\{Data.Height}_[KOMPH]_{GetNalichikKod(GetNalichnik(false))}_VO_P.DXF";
-            //var usPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\Горизонтальные\{Data.Width}_[KOMPH]_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_VO_G.DXF";
-            //var dsPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\Горизонтальные\{Data.Width}_[KOMPH]_VO_POR.DXF";
+        private double GetPorPered(short porogKod)
+        {
+            switch (porogKod)
+            {
+                case (short)PorogNames.Порог_25_скос:
+                case (short)PorogNames.Порог_25:
+                case (short)PorogNames.Порог_14:
+                    return Data.LicPanel ? 79.65 : 71.65;
 
-            //var rzPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\РЖК\{Data.Height}_[KOMPH]_VO_RZK.DXF";
+                case (short)PorogNames.Порог_40:
+                    return Data.LicPanel ? 90.65 : 82.65;
 
-            //pathes = new Dictionary<string, string>
-            //{
-            //    {$"{template}_VO_LL.DXF", llPath},
+                default:
+                    return 0;
+            }
+        }
 
-            //    {$"{template}_VO_NP.DXF", npPath},
-            //    {$"{template}_VO_OU.DXF", ouPath},
-            //    {$"{template}_VO_OD.DXF", odPath},
+        private static double GetPorZad(short porogKod)
+        {
+            switch (porogKod)
+            {
+                case (short)PorogNames.Порог_14:
+                    return 43.26;
 
-            //    {$"{template}_{GetNalichikKod(GetNalichnik())}_VO_{GetPositionKod()}_ZS.DXF", zsPath},
-            //    {$"{template}_{GetNalichikKod(GetNalichnik(false))}_VO_{GetPositionKod(false)}_PS.DXF", psPath},
-            //    {$"{template}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_VO_US.DXF", usPath},
-            //    {$"{template}_VO_POR.DXF", dsPath},
+                case (short)PorogNames.Порог_25_скос:
+                    return 58.26;
 
-            //    {$"{template}_VO_RZK.DXF", rzPath}
-            //};
+                case (short)PorogNames.Порог_40:
+                    return 82.75;
+
+                default:
+                    return 0;
+            }
+        }
+
+        private double GetLlOtPola(short porogKod)
+        {
+            switch (porogKod)
+            {
+                case (short)PorogNames.Порог_14:
+                case (short)PorogNames.Порог_25:
+                case (short)PorogNames.Порог_25_скос:
+                    return 4;
+
+                default:
+                    return 15;
+            }
+        }
+
+        private static double GetRzpLength(short doorHeight, short porogKod)
+        {
+            switch (porogKod)
+            {
+                case (short)PorogNames.Порог_14:
+                case (short)PorogNames.Порог_25:
+                case (short)PorogNames.Порог_25_скос:
+                    return doorHeight - 93;
+
+                default:
+                    return doorHeight - 93 - 11;
+            }
         }
     }
 }

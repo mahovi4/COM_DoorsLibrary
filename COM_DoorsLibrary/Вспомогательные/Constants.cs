@@ -318,7 +318,8 @@ public enum DM_Zamok1Names {
     Гардиан_32_01 = 21,
     Apecs_30_R = 22,
     Crit_7_RPM = 23,
-    ECO_GBS_81 = 25
+    ECO_GBS_81 = 25,
+    Aler_AL250 = 27
 }
 public enum DM_Zamok2Names {
     Нет = 0,
@@ -382,6 +383,7 @@ public enum ODL_ZamokNames
     ПП = 1,
     Г_12_11_ручка_фланец = 9,
     Просам_ЗВ_8 = 5,
+    Гардиан_10_01 = 16,
     Почтовый = 26
 }
 public enum PorogNames
@@ -525,7 +527,8 @@ public enum ZamokNames
     Crit_7_RPM = 23,
     Гардиан_50_01 = 24,
     ECO_GBS_81 = 25,
-    Почтовый = 26
+    Почтовый = 26,
+    Aler_AL250 = 27
 }
 public enum RuchkaNames
 {
@@ -539,6 +542,7 @@ public enum RuchkaNames
     Ручка_РЯ_180 = 7,
     Ручка_Потайная = 8,
     Ручка_планка_Просам = 9,
+    Ручка_скоба_самодельная = 10,
     PB_1300 = 11,
     PB_1700A = 12,
     PB_1700C = 13,

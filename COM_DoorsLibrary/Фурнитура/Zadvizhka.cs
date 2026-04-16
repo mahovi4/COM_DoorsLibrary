@@ -32,6 +32,10 @@ internal class Zadvizhka
                                      koef62 + 
                                      koef90 / 2;
 
+        zadvizhkaDatas.OnList = param.Otkrivanie.Value == Otkrivanie.ЛевоеВО || param.Otkrivanie.Value == Otkrivanie.ПравоеВО ? 0 : 1;
+
+        zadvizhkaDatas.OtKrayaLP = 35.5 - koef62 - (koef90 > 0 ? (koef90/2) - 6 : 0);
+
         if (cons.CompareKod(param.Kod, "ДМ", "(70)") || cons.CompareKod(param.Kod, "ЛМ", "(70)"))
             OtstupSuf = "_70";
         else if(cons.CompareKod(param.Kod, "ДМ", "(62)") || cons.CompareKod(param.Kod, "ЛМ", "(62)"))
@@ -68,12 +72,13 @@ internal class Zadvizhka
 
         return "OT_KRAYA_VA";
     }
-
+    
     public ZadvizhkaDatas Datas => zadvizhkaDatas;
     public double OtKrayaVA => zadvizhkaDatas.OtKrayaVA;
     public double VertushokOtKraya => zadvizhkaDatas.VertOtKraya;
     public short OtPola => zadvizhkaDatas.OtPola;
     public short Kod => zadvizhkaDatas.Kod;
+    public double OtKrayaLP => zadvizhkaDatas.OtKrayaLP;
     public double Otvetka_Otstup(short stoykaType)
     {
         if (zadvizhkaDatas.Kod != (int) ZadvizhkaNames.Ночной_сторож) return 0;
@@ -103,4 +108,6 @@ public struct ZadvizhkaDatas
     public short OtPola;
     public double OtKrayaVA; 
     public double VertOtKraya;
+    public int OnList;
+    public double OtKrayaLP;
 }

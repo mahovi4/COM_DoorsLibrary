@@ -7,6 +7,7 @@ namespace COM_DoorsLibrary
         public override string Name => "КВ05";
         public override string Description => "ДМ1-МДФ1";
         public override string MaketDir { get; }
+        public override double LL_OtPola { get; }
         public override double LL_Height { get; }
         public override double LL_Width { get; }
         public override double VL_Height { get; }
@@ -14,9 +15,14 @@ namespace COM_DoorsLibrary
         public override double VP_Length { get; }
         public override double GP_Length { get; }
         public override double MP_Length { get; }
+        public override double ProtivosOtstup { get; }
         public override double VS_Length { get; }
         public override double GS_Length { get; }
         public override double RZK_Length { get; }
+        public override double POR_Pered => 0;
+        public override double POR_Zad => 0;
+        public override double RZP_Lengnth => 0;
+
         public override double Nalichnik(Raspolozhenie pos)
         {
             throw new System.NotImplementedException();

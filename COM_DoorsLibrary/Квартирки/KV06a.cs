@@ -7,16 +7,21 @@ namespace COM_DoorsLibrary
         public override string Name => "КВ06a";
         public override string Description => "РИО-Классика, РИО-Муар, РИО-Медный_Антик";
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[СТ-КВ06]\";
-        public override double LL_Height => Data.Height - 45;
-        public override double LL_Width => Data.Width + 144;
+        public override double LL_OtPola => 0;
+        public override double LL_Height => Data.Height - 43;
+        public override double LL_Width => Data.Width + 138;
         public override double VL_Height => 0;
         public override double VL_Width => 0;
-        public override double VP_Length => 0;
-        public override double GP_Length => Data.Width -57;
-        public override double MP_Length => Data.Width - 89;
+        public override double VP_Length => Data.Height - 76.5;
+        public override double GP_Length => Data.Width - 54;
+        public override double MP_Length => Data.Width - 84.5;
+        public override double ProtivosOtstup => 231;
         public override double VS_Length => Data.Height;
         public override double GS_Length => Data.Width - 69;
         public override double RZK_Length => 0;
+        public override double POR_Pered => 0;
+        public override double POR_Zad => 0;
+        public override double RZP_Lengnth => 0;
 
         public override double Nalichnik(Raspolozhenie pos)
         {

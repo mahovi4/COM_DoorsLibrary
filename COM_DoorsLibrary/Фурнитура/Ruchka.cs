@@ -22,20 +22,29 @@ internal class Ruchka
             ? dataDM.RuchkaAS[num] 
             : dataDM.RuchkaPS[num];
 
+        ruchkaParam.Name = Name;
+
         if(ruchkaParam.Kod == (short)RuchkaNames.Ручка_скоба)
         {
             if(ruchkaParam.Mezhosevoe == 0)
                 ruchkaParam.Mezhosevoe = 300;
             if (ruchkaParam.OtPola == 0)
             {
-                if (ruchkaParam.Mezhosevoe <= 400)
-                    ruchkaParam.OtPola = 1100;
+                if (param.Zamok[0].Kod == (int)ZamokNames.Нет & param.Zamok[1].Kod == (int)ZamokNames.Нет)
+                    ruchkaParam.OtPola = (short)(1000 - ruchkaParam.Mezhosevoe/2);
                 else
-                    ruchkaParam.OtPola = (short)(1100 - ruchkaParam.Mezhosevoe / 2);
+                {
+                    if (ruchkaParam.Mezhosevoe <= 400)
+                        ruchkaParam.OtPola = 1100;
+                    else
+                        ruchkaParam.OtPola = (short) (1100 - ruchkaParam.Mezhosevoe / 2);
+                }
             }
         }
         else if(ruchkaParam.OtPola == 0) 
             ruchkaParam.OtPola = (short)cons.RUCHKA_OT_POLA;
+
+        ruchkaParam.IsZamkovaya = IsZamkovaya;
     }
 
     public double OtKraya(short pos)
@@ -129,8 +138,15 @@ internal class Ruchka
                 return 0;
         }
     }
+
+    public float OtVerha => Kod == (int)RuchkaNames.PB_1700C
+        ? float.Parse(ini.ReadKey(ruchkaParam.Kod.ToString(), "OT_VERHA")) 
+        : 0;
+
     public bool IsZamkovaya => 
         bool.Parse(ini.ReadKey(ruchkaParam.Kod.ToString(), "ZAMKOVAYA"));
     public string Name => 
         ini.ReadKey(ruchkaParam.Kod.ToString(), "NAME");
+
+    public RuchkaParam Param => ruchkaParam;
 }

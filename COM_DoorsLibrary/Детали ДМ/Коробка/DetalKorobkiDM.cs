@@ -1,7 +1,8 @@
 ﻿internal class DetalKorobkiDM
 {
     private short KType, KZamok1, KZamok2, KZamokKodoviy, KZadvizhka, KHeight, KRast1Anker, KRast2Anker, KRast3Anker, KZagNSUp, KZagNSDown;
-    private double KGabarit, KStik, KGlubina, KZanizhUp, KZanizhDown, KNalichnik, KAnkerOtKraya, KDAnker1, KDAnker2, KDAnker3, KOTSotKraya, KOTSotstup;
+    private short rzkWidth, rzkHeight;
+    private double KGabarit, KStikUp, KStikDwn, KGlubina, KZanizhUp, KZanizhDown, KNalichnik, KAnkerOtKraya, KDAnker1, KDAnker2, KDAnker3, KOTSotKraya, KOTSotstup;
     private bool KUdlin, KGND, KOTS, KObrezka, KKabelKanal, KzSt;
     private string KName, KError;
     private readonly short Kkoef90, Kkoef62, Kk62por, KkoefK1, KkoefK2, KkoefK3, KkoefKK2;
@@ -33,12 +34,12 @@
         {
             if (pos == Raspolozhenie.Верх) 
             {
-                if (param.Intek) 
+                if (param.Intek && nalichniki[(short)pos] > 0) 
                 {
                     KType = 4;
-                    KNalichnik = nalichniki[((short)pos)] + double.Parse(iniDM.ReadKey("Korobka", "DM_K_PRIT_NAL_K1"));
+                    KNalichnik = nalichniki[(short)pos] + double.Parse(iniDM.ReadKey("Korobka", "DM_K_PRIT_NAL_K1"));
                 } 
-                else if (nalichniki[((short)pos)] == 0) 
+                else if (nalichniki[(short)pos] == 0) 
                 {
                     KType = 2;
                     KNalichnik = double.Parse(iniDM.ReadKey("Korobka", "DM_K_PRIT_NAL_K2"));
@@ -46,7 +47,7 @@
                 else 
                 {
                     KType = 1;
-                    KNalichnik = nalichniki[((short)pos)] + double.Parse(iniDM.ReadKey("Korobka", "DM_K_PRIT_NAL_K1"));
+                    KNalichnik = nalichniki[(short)pos] + double.Parse(iniDM.ReadKey("Korobka", "DM_K_PRIT_NAL_K1"));
                 }
             } 
             else if (pos == Raspolozhenie.Ниж) 
@@ -58,7 +59,7 @@
                         KType = param.Porog.Kod;
                         KNalichnik = 0;
                     } 
-                    else if ((param.Porog.Kod == 0 || param.Porog.Kod == 2) && nalichniki[((short)pos)] == 0) 
+                    else if ((param.Porog.Kod == 0 || param.Porog.Kod == 2) && nalichniki[(short)pos] == 0) 
                     {
                         KType = 0;
                         KNalichnik = 0;
@@ -378,9 +379,14 @@
         get => KGabarit;
         set => KGabarit = value;
     }
-    public double Stik {
-        get => KStik;
-        set => KStik = value;
+    public double StikUp {
+        get => KStikUp;
+        set => KStikUp = value;
+    }
+    public double StikDwn
+    {
+        get => KStikDwn;
+        set => KStikDwn = value;
     }
     public double Glubina {
         get => KGlubina;
@@ -422,6 +428,19 @@
         get => KRast3Anker;
         set => KRast3Anker = value;
     }
+
+    public short RZKWidth
+    {
+        get => rzkWidth;
+        set => rzkWidth = value;
+    }
+
+    public short RZKHeight
+    {
+        get => rzkHeight;
+        set => rzkHeight = value;
+    }
+
     public double DAnker1 {
         get => KDAnker1;
         set => KDAnker1 = value;

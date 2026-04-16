@@ -7,6 +7,7 @@ namespace COM_DoorsLibrary
         public override string Name => "КВ08";
         public override string Description => "РИО-Метал_Метал";
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[СТ-КВ08]";
+        public override double LL_OtPola => 0;
         public override double LL_Height => Data.Height - 29;
         public override double LL_Width => Data.Width - 34;
         public override double VL_Height => Data.Height - 83;
@@ -14,9 +15,14 @@ namespace COM_DoorsLibrary
         public override double VP_Length => 0;
         public override double GP_Length => Data.Width - 91.4;
         public override double MP_Length => 0;
+        public override double ProtivosOtstup => 210.5;
         public override double VS_Length => Data.Height;
         public override double GS_Length => Data.Width - 69;
         public override double RZK_Length => 0;
+        public override double POR_Pered => 0;
+        public override double POR_Zad => 0;
+        public override double RZP_Lengnth => 0;
+
         public override double Nalichnik(Raspolozhenie pos)
         {
             switch (Data.Nalichniki[(short)pos])
@@ -27,9 +33,9 @@ namespace COM_DoorsLibrary
                         return 77.62;
 
                     if (pos == Raspolozhenie.Лев || pos == Raspolozhenie.Прав)
-                        return Data.Nalichniki[(short)pos] + 7.84;
+                        return Data.Nalichniki[(short)pos] + 6.84;
 
-                    return Data.Nalichniki[(short)pos] + 7.63;
+                    return Data.Nalichniki[(short)pos] + 6.63;
 
                 case 50:
                 case 100:
@@ -37,25 +43,25 @@ namespace COM_DoorsLibrary
                         return Data.Nalichniki[(short)pos] + 7.62;
 
                     if (pos == Raspolozhenie.Лев || pos == Raspolozhenie.Прав)
-                        return 107.84;
+                        return 106.84;
 
-                    return 107.63;
+                    return 106.63;
                 case 0:
                     if (Data.Otkrivanie == Otkrivanie.Левое || Data.Otkrivanie == Otkrivanie.Правое)
                         return 27.62;
 
                     if (pos == Raspolozhenie.Лев || pos == Raspolozhenie.Прав)
-                        return 49 + 7.84;
+                        return 49 + 6.84;
 
-                    return 49 + 7.63;
+                    return 49 + 6.63;
                 default:
                     if (Data.Otkrivanie == Otkrivanie.Левое || Data.Otkrivanie == Otkrivanie.Правое)
                         return Data.Nalichniki[(short) pos] + 7.62;
 
                     if (pos == Raspolozhenie.Лев || pos == Raspolozhenie.Прав)
-                        return Data.Nalichniki[(short)pos] + 7.84;
+                        return Data.Nalichniki[(short)pos] + 6.84;
 
-                    return Data.Nalichniki[(short)pos] + 7.63;
+                    return Data.Nalichniki[(short)pos] + 6.63;
             }
         }
 

@@ -7,6 +7,7 @@ namespace COM_DoorsLibrary
         public override string Name => "КВ07";
         public override string Description => "Жардин";
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[СТ-КВ07]";
+        public override double LL_OtPola => 0;
         public override double LL_Height => Data.Height - 45;
         public override double LL_Width => Data.Width + 144;
         public override double VL_Height => 0;
@@ -14,9 +15,14 @@ namespace COM_DoorsLibrary
         public override double VP_Length => 0;
         public override double GP_Length => Data.Width - 57;
         public override double MP_Length => Data.Width - 89;
+        public override double ProtivosOtstup => 231;
         public override double VS_Length => Data.Height;
         public override double GS_Length => Data.Width - 69;
         public override double RZK_Length => 0;
+        public override double POR_Pered => 0;
+        public override double POR_Zad => 0;
+        public override double RZP_Lengnth => 0;
+
         public override double Nalichnik(Raspolozhenie pos)
         {
             switch (Data.Nalichniki[(short)pos])

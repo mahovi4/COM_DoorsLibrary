@@ -1,4 +1,5 @@
-﻿using static DM;
+﻿using System.Linq.Expressions;
+using static DM;
 
 class StvorkaDM
 {
@@ -205,6 +206,15 @@ class StvorkaDM
     {
         get { return VLOtPola; }
     }
+    public double ListThick(int index)
+    {
+        return index == 0 
+            ? LicevoyList.Thick 
+            : VnutrenniyList.Thick;
+    }
+
+    public double VirezPoPritvoru_Height => 
+        LicevoyList.VirezPoPritvoru_Height;
     public double VirezPoPorogu_Height
     {
         get { return LicevoyList.VirezPoPorogu_Height; }
@@ -277,4 +287,6 @@ class StvorkaDM
                 return LicevoyList.Vstavka_Width;
         }
     }
+
+    public short Coefficient => VnutrenniyList.Coefficient;
 }
