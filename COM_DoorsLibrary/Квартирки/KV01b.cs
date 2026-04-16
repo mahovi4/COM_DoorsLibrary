@@ -6,6 +6,8 @@ namespace COM_DoorsLibrary
     {
         public override string Name => "КВ01b";
         public override string Description => "Комфорт-ВО";
+        public override bool IsLicPanel => false;
+        public override bool IsCG => true;
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[KOMPF_VO]";
         public override double LL_OtPola => GetLlOtPola(Data.Porog);
         public override double LL_Height => Data.Height - GetPorCoefficient(Data.Porog);
@@ -19,9 +21,11 @@ namespace COM_DoorsLibrary
         public override double VS_Length => Data.Height - 20;
         public override double GS_Length => Data.Width;
         public override double RZK_Length => Data.Height - 2;
+        public override double RZK_PR_Length => 0;
         public override double POR_Pered => GetPorPered(Data.Porog);
         public override double POR_Zad => GetPorZad(Data.Porog);
         public override double RZP_Lengnth => GetRzpLength(Data.Height, Data.Porog);
+        public override double Styazh_Lengnth => 0;
 
         public override double Nalichnik(Raspolozhenie pos)
         {

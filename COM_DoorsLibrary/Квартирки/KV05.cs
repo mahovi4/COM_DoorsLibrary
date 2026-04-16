@@ -6,6 +6,8 @@ namespace COM_DoorsLibrary
     {
         public override string Name => "КВ05";
         public override string Description => "ДМ1-МДФ1";
+        public override bool IsLicPanel => false;
+        public override bool IsCG => false;
         public override string MaketDir { get; }
         public override double LL_OtPola { get; }
         public override double LL_Height { get; }
@@ -19,9 +21,11 @@ namespace COM_DoorsLibrary
         public override double VS_Length { get; }
         public override double GS_Length { get; }
         public override double RZK_Length { get; }
+        public override double RZK_PR_Length { get; }
         public override double POR_Pered => 0;
         public override double POR_Zad => 0;
         public override double RZP_Lengnth => 0;
+        public override double Styazh_Lengnth { get; }
 
         public override double Nalichnik(Raspolozhenie pos)
         {

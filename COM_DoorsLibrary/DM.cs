@@ -180,13 +180,14 @@ public interface IEDM
 
 }
 
-[Guid("a7c72949-786c-4faf-b26f-e4b2bf679c0c"), ClassInterface(ClassInterfaceType.None), ComSourceInterfaces(typeof(IEDM))]
+[Guid("a7c72949-786c-4faf-b26f-e4b2bf679c0c"), ClassInterface(ClassInterfaceType.None),
+ ComSourceInterfaces(typeof(IEDM))]
 [Description("Класс расчета ДМ.")]
 public class DM : IDM
 {
     private StKod _Kod;
     private short Koef2mm = 0, k62 = 0, k70 = 0;
-    private string _name = "",_rzpName = "", NameDob = "", _ERRORS = "", _PROBLEMS = "";
+    private string _name = "", _rzpName = "", NameDob = "", _ERRORS = "", _PROBLEMS = "";
     private bool _virezShpin;
     private double shildOtPola;
 
@@ -208,6 +209,7 @@ public class DM : IDM
     {
         Init(tData.ForDM);
     }
+
     public void Init(DMParam data)
     {
         Constants cons = new Constants();
@@ -253,13 +255,15 @@ public class DM : IDM
                     otsZ = double.Parse(ini.ReadKey("TorcevayaPlastina", key));
                 }
 
-                if(Aktivka.VList_Hight + width - param.Thick_VL <= cons.LIST_HIGHT)
-                    torceviePlastini[0] = new TorcevayaPlastina(width - param.Thick_VL, Aktivka.VList_Width - otsP - otsZ, otsP, otsZ, param.Thick_VL > 1.9);
+                if (Aktivka.VList_Hight + width - param.Thick_VL <= cons.LIST_HIGHT)
+                    torceviePlastini[0] = new TorcevayaPlastina(width - param.Thick_VL,
+                        Aktivka.VList_Width - otsP - otsZ, otsP, otsZ, param.Thick_VL > 1.9);
 
                 if (Aktivka.VList_Hight + (width - param.Thick_VL) * 2 <= cons.LIST_HIGHT)
-                    torceviePlastini[1] = IsVipadPorog 
-                        ? null 
-                        : new TorcevayaPlastina(width - param.Thick_VL, Aktivka.VList_Width - otsP - otsZ, otsP, otsZ, param.Thick_VL > 1.9);
+                    torceviePlastini[1] = IsVipadPorog
+                        ? null
+                        : new TorcevayaPlastina(width - param.Thick_VL, Aktivka.VList_Width - otsP - otsZ, otsP, otsZ,
+                            param.Thick_VL > 1.9);
             }
 
             //=====================================|Фурнитура|============================================
@@ -299,19 +303,20 @@ public class DM : IDM
                 int coef;
 
                 //Переопределение стороны пластины по стороне открывания двери
-                var pos = strPlastina.Position == PositionPlastina.Лицевая 
+                var pos = strPlastina.Position == PositionPlastina.Лицевая
                     ? Otkrivanie == Otkrivanie.Левое || Otkrivanie == Otkrivanie.Правое
-                        ? PositionPlastina.Лицевая 
+                        ? PositionPlastina.Лицевая
                         : PositionPlastina.Внутренняя
                     : Otkrivanie == Otkrivanie.Левое || Otkrivanie == Otkrivanie.Правое
-                        ? PositionPlastina.Внутренняя 
+                        ? PositionPlastina.Внутренняя
                         : PositionPlastina.Лицевая;
 
                 //Если высота нижней лицевой пластины больше 200, то обрезка под петлю
-                var podrezka = pos == PositionPlastina.Лицевая 
-                               && strPlastina.Height > 200 
-                               && strPlastina.Otstup < 300 
-                                    ? 10 : 0;
+                var podrezka = pos == PositionPlastina.Лицевая
+                               && strPlastina.Height > 200
+                               && strPlastina.Otstup < 300
+                    ? 10
+                    : 0;
 
                 if (strPlastina.Stvorka == Stvorka.Активная)
                 {
@@ -319,9 +324,9 @@ public class DM : IDM
 
                     coef = pos == PositionPlastina.Лицевая ? 34 : param.WAktiv.Value > 0 ? -14 : 0;
 
-                    if(pos == PositionPlastina.Внутренняя) tmp -= 5;
+                    if (pos == PositionPlastina.Внутренняя) tmp -= 5;
 
-                    strPlastina.Width = tmp + coef - podrezka; 
+                    strPlastina.Width = tmp + coef - podrezka;
                 }
                 else
                 {
@@ -332,7 +337,7 @@ public class DM : IDM
                     }
 
                     coef = pos == PositionPlastina.Лицевая ? 0 : 15;
-                    
+
                     strPlastina.Width = Passivka.Width.Round() + coef - podrezka;
                 }
 
@@ -399,6 +404,7 @@ public class DM : IDM
             param.Zamok[1].Kod = 1;
             Problems = "Замок без пробивки под ручки! ";
         }
+
         if (param.Zamok[0].ElMehZashelka)
         {
             if (cons.CompareKod(param.Kod, "ДМ-2"))
@@ -407,42 +413,54 @@ public class DM : IDM
                 param.Kabel = KabelRaspolozhenie.нет;
         }
     }
+
     private void CheckForProblems()
     {
-        if (param.Zamok[0].Kod == (short) DM_Zamok1Names.Просам_ЗВ_4)
+        if (param.Zamok[0].Kod == (short)DM_Zamok1Names.Просам_ЗВ_4)
         {
-            if (param.RuchkaAS[0].Kod != (short) RuchkaNames.Ручка_планка_Просам &&
-                param.RuchkaAS[0].Kod != (short) RuchkaNames.Ручка_фланец)
+            if (param.RuchkaAS[0].Kod != (short)RuchkaNames.Ручка_планка_Просам &&
+                param.RuchkaAS[0].Kod != (short)RuchkaNames.Ручка_фланец)
                 Problems = "Замок 'Просам ЗВ-4' не укомплектован подходящей ручкой!";
         }
+
         if (param.Height <= 1200)
             Problems = "Дверь слишком низкая, проверь противосъемы с анкерами!";
-        if(param.Nalichniki[(int)Raspolozhenie.Ниж] > 0)
+        if (param.Nalichniki[(int)Raspolozhenie.Ниж] > 0)
             Problems = "Снизу есть наличник. ";
 
-        if (param.RuchkaAS[0].Kod == (short) RuchkaNames.Ручка_скоба & param.RuchkaAS[0].Mezhosevoe > 400)
+        if (param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_скоба & param.RuchkaAS[0].Mezhosevoe > 400)
             Problems = "Проверь расположение ручки на активной створке!";
         if (param.RuchkaPS[0].Kod == (short)RuchkaNames.Ручка_скоба & param.RuchkaPS[0].Mezhosevoe > 400)
             Problems = "Проверь расположение ручки на пассивной створке!";
 
         if (IsOkno(0))
         {
-            if (param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_скоба | param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_кнопка)
-                if (Aktivka.VList_Width - Okna[0].WVirVL - Okna[0].OtCraya(1) - Furniture.Ruchka_OtKraya((short)Stvorka.Активная, 0, 1) < 80)
+            if (param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_скоба |
+                param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_кнопка)
+                if (Aktivka.VList_Width - Okna[0].WVirVL - Okna[0].OtCraya(1) -
+                    Furniture.Ruchka_OtKraya((short)Stvorka.Активная, 0, 1) < 80)
                     Problems = "Окно близко к ручке. ";
-            if (param.RuchkaAS[1].Kod == (short)RuchkaNames.Ручка_скоба | param.RuchkaAS[1].Kod == (short)RuchkaNames.Ручка_кнопка)
-                if (Aktivka.VList_Width - Okna[0].WVirVL - Okna[0].OtCraya(1) - Furniture.Ruchka_OtKraya((short)Stvorka.Активная, 1, 1) < 80)
+            if (param.RuchkaAS[1].Kod == (short)RuchkaNames.Ручка_скоба |
+                param.RuchkaAS[1].Kod == (short)RuchkaNames.Ручка_кнопка)
+                if (Aktivka.VList_Width - Okna[0].WVirVL - Okna[0].OtCraya(1) -
+                    Furniture.Ruchka_OtKraya((short)Stvorka.Активная, 1, 1) < 80)
                     Problems = "Окно близко к ручке. ";
         }
+
         if (IsOkno(1))
         {
-            if (param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_скоба | param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_кнопка)
-                if (Aktivka.VList_Width - Okna[1].WVirVL - Okna[1].OtCraya(1) - Furniture.Ruchka_OtKraya((short)Stvorka.Активная, 0, 1) < 80)
+            if (param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_скоба |
+                param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_кнопка)
+                if (Aktivka.VList_Width - Okna[1].WVirVL - Okna[1].OtCraya(1) -
+                    Furniture.Ruchka_OtKraya((short)Stvorka.Активная, 0, 1) < 80)
                     Problems = "Окно близко к ручке. ";
-            if (param.RuchkaAS[1].Kod == (short)RuchkaNames.Ручка_скоба | param.RuchkaAS[1].Kod == (short)RuchkaNames.Ручка_кнопка)
-                if (Aktivka.VList_Width - Okna[1].WVirVL - Okna[1].OtCraya(1) - Furniture.Ruchka_OtKraya((short)Stvorka.Активная, 1, 1) < 80)
+            if (param.RuchkaAS[1].Kod == (short)RuchkaNames.Ручка_скоба |
+                param.RuchkaAS[1].Kod == (short)RuchkaNames.Ручка_кнопка)
+                if (Aktivka.VList_Width - Okna[1].WVirVL - Okna[1].OtCraya(1) -
+                    Furniture.Ruchka_OtKraya((short)Stvorka.Активная, 1, 1) < 80)
                     Problems = "Окно близко к ручке. ";
         }
+
         if (param.Zadvizhka.Kod == (short)ZadvizhkaNames.Ночной_сторож)
         {
             if (IsOkno(0))
@@ -452,25 +470,29 @@ public class DM : IDM
                 if ((Aktivka.VList_Width - Okna[1].WVirVL - Okna[1].OtCraya(1)) < (250 + Koef2mm))
                     Problems = "Окно близко к ночному сторожу. ";
         }
-        for (short i = 0; i < Okna.Length; i++) {
+
+        for (short i = 0; i < Okna.Length; i++)
+        {
             if (IsOkno(i))
-                if((Okna[i].OtPola(0) + Okna[i].HVirLL) < Aktivka.LList_Hight / 2)
+                if ((Okna[i].OtPola(0) + Okna[i].HVirLL) < Aktivka.LList_Hight / 2)
                     Problems = "Необходимо проверить высоту расположения окна " + (i + 1) + ". ";
         }
+
         for (short i = 0; i < param.Okno.Length; i++)
             if (param.IsOkno(i) & param.Okno[i].Steklo.Height == param.Okno[i].Steklo.Width)
                 Problems = "Высота и ширина окна " + (i + 1) + " равны, возможно окно круглое. ";
-        
+
         if (param.IsOkno(0) & param.IsOkno(2))
         {
             if (param.Okno[0].VertRaspol == param.Okno[2].VertRaspol)
             {
                 if (param.Okno[0].PoVertikali != param.Okno[2].PoVertikali)
                     Problems = "Окна на активной и пассивной створке на разной высоте. ";
-                if(param.Okno[0].VertRaspol != param.Okno[2].VertRaspol)
+                if (param.Okno[0].VertRaspol != param.Okno[2].VertRaspol)
                     Problems = "Окна на активной и пассивной створке имеют разное расположение. ";
             }
         }
+
         if (param.IsOkno(1) & param.IsOkno(3))
         {
             if (param.Okno[1].VertRaspol == param.Okno[3].VertRaspol)
@@ -481,23 +503,27 @@ public class DM : IDM
                     Problems = "Окна на активной и пассивной створке имеют разное расположение. ";
             }
         }
+
         if (Korobka.IsPorogNestandart)
             Problems = "Присутствует не стандартный порог. Выполнена как безпороговая. ";
         if (Aktivka.VList_Width > (cons.LIST_WIDTH))
-            Problems = "Развертка внутреннего листа активной створки равна " + Aktivka.VList_Width + ", что больше ширины листа! ";
+            Problems = "Развертка внутреннего листа активной створки равна " + Aktivka.VList_Width +
+                       ", что больше ширины листа! ";
         if (Passivka != null)
         {
             if (Passivka.VList_Width > (cons.LIST_WIDTH))
-                Problems = "Развертка внутреннего листа пассивной створки равна " + Passivka.VList_Width + ", что больше ширины листа! ";
+                Problems = "Развертка внутреннего листа пассивной створки равна " + Passivka.VList_Width +
+                           ", что больше ширины листа! ";
         }
-        foreach(Raspolozhenie pos in Enum.GetValues(typeof(Raspolozhenie)))
+
+        foreach (Raspolozhenie pos in Enum.GetValues(typeof(Raspolozhenie)))
         {
             if (!IsFramuga(pos)) continue;
             var fr = Framuga(pos);
             var w = fr.Steklo_Width / 1000f;
             var h = fr.Steklo_Hight / 1000f;
             var gs = w * h;
-            if(gs > 2)
+            if (gs > 2)
             {
                 //MessageBox.Show("Размер стекла фрамуги " + pos.ToString() + " равен " + gs + " м.кв, что больше 2 м.кв!", Num);
                 MessageBox.Show($"Размер стекла фрамуги {pos} равен {gs} м.кв, что больше 2 м.кв!", Num);
@@ -505,7 +531,8 @@ public class DM : IDM
             }
         }
 
-        if (Furniture.IsKodoviy && Furniture.ContainsRuchka((short) RuchkaNames.Ручка_скоба) && Furniture.Zamki.Length > 0)
+        if (Furniture.IsKodoviy && Furniture.ContainsRuchka((short)RuchkaNames.Ручка_скоба) &&
+            Furniture.Zamki.Length > 0)
         {
             if (Furniture.Zamki.Length > 1 || Furniture.Zamki[0].OtPola > 1000)
                 Problems = "Проверь позиции кодового замка и ручки-скобы!";
@@ -520,6 +547,7 @@ public class DM : IDM
         if (param.RZh)
             Problems = "Дверь РЖ, нужны ребра!!!!";
     }
+
     private void CheckForErrors()
     {
         if (param.DPM & param.EIS)
@@ -533,27 +561,33 @@ public class DM : IDM
             else if (param.Porog.Kod == 14)
                 Errors = "Дверь EIS не может быть с 14 порогом. ";
         }
+
         if (Passivka != null)
         {
             if (param.Porog.Kod == 2)
             {
                 var minLength = float.Parse(ini.ReadKey("Porog", "DM_POR_VIPAD_LENGTH_MIN"));
-                if (param.RuchkaPS[0].Kod == (int) RuchkaNames.PB_1300 || 
-                    param.RuchkaPS[0].Kod == (int)RuchkaNames.PB_1700A || 
+                if (param.RuchkaPS[0].Kod == (int)RuchkaNames.PB_1300 ||
+                    param.RuchkaPS[0].Kod == (int)RuchkaNames.PB_1700A ||
                     param.RuchkaPS[0].Kod == (int)RuchkaNames.АП_DoorLock)
                 {
                     if (Passivka.Width < minLength + 60)
-                        Errors = "Выпадающий порог нельзя установить в створку с врезной антипаникой и шириной меньше " + (minLength + 60) + " мм. ";
+                        Errors =
+                            "Выпадающий порог нельзя установить в створку с врезной антипаникой и шириной меньше " +
+                            (minLength + 60) + " мм. ";
                 }
                 else if (Passivka.Width < minLength)
                     Errors = "Выпадающий порог нельзя установить в створку меньше " + minLength + " мм. ";
             }
+
             if (param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1300 & Passivka.Width < 439)
                 Errors = "Антипанику нельзя установить на створку меньше 439 мм. ";
-            if ((param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1700A | param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1700C) & Passivka.Width < 300)
+            if ((param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1700A |
+                 param.RuchkaPS[0].Kod == (short)RuchkaNames.PB_1700C) & Passivka.Width < 300)
                 Errors = "Антипанику нельзя установить на створку меньше 300 мм. ";
             if (Passivka.Width < float.Parse(ini.ReadKey("Gabarite", "DM_PASSIV_WIDTH_MIN")))
-                Errors = "Пассивная створка = " + Passivka.Width + ", что меньше " + ini.ReadKey("Gabarite", "DM_PASSIV_WIDTH_MIN") + " мм. ";
+                Errors = "Пассивная створка = " + Passivka.Width + ", что меньше " +
+                         ini.ReadKey("Gabarite", "DM_PASSIV_WIDTH_MIN") + " мм. ";
             if (param.Kod == 3 & Passivka.Width == 0)
                 Errors = "(MAX) одностворчатым быть не может! ";
         }
@@ -562,27 +596,21 @@ public class DM : IDM
             if (param.Kod == 3)
                 Errors = "(MAX) одностворчатым быть не может! ";
         }
+
         if (cons.CompareKod(param.Kod, "ДМ-1"))
         {
-            int minH = param.DPM ? int.Parse(ini.ReadKey("Gabarite", "DPM_HEIGHT_MIN")) : int.Parse(ini.ReadKey("Gabarite", "DM_HEIGHT_MIN"));
-            int maxH = param.DPM ? int.Parse(ini.ReadKey("Gabarite", "DPM_HEIGHT_MAX")) : int.Parse(ini.ReadKey("Gabarite", "DM_HEIGHT_MAX"));
-            int minW = param.DPM ? int.Parse(ini.ReadKey("Gabarite", "DPM1_WIDTH_MIN")) : int.Parse(ini.ReadKey("Gabarite", "DM1_WIDTH_MIN"));
-            int maxW = param.DPM ? int.Parse(ini.ReadKey("Gabarite", "DPM1_WIDTH_MAX")) : int.Parse(ini.ReadKey("Gabarite", "DM1_WIDTH_MAX"));
-            if(param.Height < minH)
-                Errors = "Дверь слишком низкая (не менее " + minH + "). ";
-            if (param.Height > maxH)
-                Errors = "Превышена максимальная высота изделия (не более " + maxH + "). ";
-            if(param.Width < minW)
-                Errors = "Дверь слишком узкая (не менее " + minW + "). ";
-            if (param.Width > maxW)
-                Errors = "Превышена максимальная ширина изделия (не более " + maxW + "). ";
-        }
-        if (cons.CompareKod(param.Kod, "ДМ-2"))
-        {
-            int minH = param.DPM ? int.Parse(ini.ReadKey("Gabarite", "DPM_HEIGHT_MIN")) : int.Parse(ini.ReadKey("Gabarite", "DM_HEIGHT_MIN"));
-            int maxH = param.DPM ? int.Parse(ini.ReadKey("Gabarite", "DPM_HEIGHT_MAX")) : int.Parse(ini.ReadKey("Gabarite", "DM_HEIGHT_MAX"));
-            int minW = param.DPM ? int.Parse(ini.ReadKey("Gabarite", "DPM2_WIDTH_MIN")) : int.Parse(ini.ReadKey("Gabarite", "DM2_WIDTH_MIN"));
-            int maxW = param.DPM ? int.Parse(ini.ReadKey("Gabarite", "DPM2_WIDTH_MAX")) : int.Parse(ini.ReadKey("Gabarite", "DM2_WIDTH_MAX"));
+            int minH = param.DPM
+                ? int.Parse(ini.ReadKey("Gabarite", "DPM_HEIGHT_MIN"))
+                : int.Parse(ini.ReadKey("Gabarite", "DM_HEIGHT_MIN"));
+            int maxH = param.DPM
+                ? int.Parse(ini.ReadKey("Gabarite", "DPM_HEIGHT_MAX"))
+                : int.Parse(ini.ReadKey("Gabarite", "DM_HEIGHT_MAX"));
+            int minW = param.DPM
+                ? int.Parse(ini.ReadKey("Gabarite", "DPM1_WIDTH_MIN"))
+                : int.Parse(ini.ReadKey("Gabarite", "DM1_WIDTH_MIN"));
+            int maxW = param.DPM
+                ? int.Parse(ini.ReadKey("Gabarite", "DPM1_WIDTH_MAX"))
+                : int.Parse(ini.ReadKey("Gabarite", "DM1_WIDTH_MAX"));
             if (param.Height < minH)
                 Errors = "Дверь слишком низкая (не менее " + minH + "). ";
             if (param.Height > maxH)
@@ -592,18 +620,49 @@ public class DM : IDM
             if (param.Width > maxW)
                 Errors = "Превышена максимальная ширина изделия (не более " + maxW + "). ";
         }
+
+        if (cons.CompareKod(param.Kod, "ДМ-2"))
+        {
+            int minH = param.DPM
+                ? int.Parse(ini.ReadKey("Gabarite", "DPM_HEIGHT_MIN"))
+                : int.Parse(ini.ReadKey("Gabarite", "DM_HEIGHT_MIN"));
+            int maxH = param.DPM
+                ? int.Parse(ini.ReadKey("Gabarite", "DPM_HEIGHT_MAX"))
+                : int.Parse(ini.ReadKey("Gabarite", "DM_HEIGHT_MAX"));
+            int minW = param.DPM
+                ? int.Parse(ini.ReadKey("Gabarite", "DPM2_WIDTH_MIN"))
+                : int.Parse(ini.ReadKey("Gabarite", "DM2_WIDTH_MIN"));
+            int maxW = param.DPM
+                ? int.Parse(ini.ReadKey("Gabarite", "DPM2_WIDTH_MAX"))
+                : int.Parse(ini.ReadKey("Gabarite", "DM2_WIDTH_MAX"));
+            if (param.Height < minH)
+                Errors = "Дверь слишком низкая (не менее " + minH + "). ";
+            if (param.Height > maxH)
+                Errors = "Превышена максимальная высота изделия (не более " + maxH + "). ";
+            if (param.Width < minW)
+                Errors = "Дверь слишком узкая (не менее " + minW + "). ";
+            if (param.Width > maxW)
+                Errors = "Превышена максимальная ширина изделия (не более " + maxW + "). ";
+        }
+
         if (param.Kod == 3 & param.Width > 2300)
             Errors = "Превышена максимальная ширина изделия (не более 2300). ";
         if (param.Kod != 21 & Aktivka.Width > 1120)
             Errors = "Превышена максимальная ширина активной створки (не более 1120). ";
         if (param.Nalichniki[1] > 0 & param.Porog.Kod > 5)
             Errors = "Порог " + param.Porog.Kod + " мм и наличник снизу! Такого не может быть! ";
+
+        if (param.PetliCount > 4 & param.WAktiv.Value == 0)
+            Errors = "Не верное количество петель на одну створку!";
+        if (param.PetliCount > 8)
+            Errors = "Не верное количество петель!";
     }
 
     private void OnProblem(string message)
     {
         Problems = message;
     }
+
     private void OnError(string message)
     {
         Errors = message;
@@ -626,6 +685,7 @@ public class DM : IDM
         get => string.IsNullOrEmpty(_ERRORS) ? "" : _ERRORS;
         set => _ERRORS += value;
     }
+
     public string Problems
     {
         get => string.IsNullOrEmpty(_PROBLEMS) ? "" : _PROBLEMS;
@@ -664,14 +724,15 @@ public class DM : IDM
                 return "DM_ЗТ-150";
         }
     }
+
     public bool IsDobor => param.Dobor;
 
     public short Dobor_Length(Raspolozhenie pos)
     {
         if (pos == Raspolozhenie.Верх | pos == Raspolozhenie.Ниж)
         {
-            return (short)(param.Width + 6 + 
-                           (IsFramuga(Raspolozhenie.Лев) ? Framuga(Raspolozhenie.Лев).Param.Width : 0) + 
+            return (short)(param.Width + 6 +
+                           (IsFramuga(Raspolozhenie.Лев) ? Framuga(Raspolozhenie.Лев).Param.Width : 0) +
                            (IsFramuga(Raspolozhenie.Прав) ? Framuga(Raspolozhenie.Прав).Param.Width : 0));
         }
 
@@ -679,23 +740,26 @@ public class DM : IDM
                        (IsFramuga(Raspolozhenie.Верх) ? Framuga(Raspolozhenie.Верх).Param.Height : 0) +
                        (IsFramuga(Raspolozhenie.Ниж) ? Framuga(Raspolozhenie.Ниж).Param.Height : 0));
     }
+
     public short Dobor_Glubina => (short)(param.DoborPar.Glubina + 10);
 
     public double[] Dobor_Nalichnik_Razv
     {
-        get 
+        get
         {
             double[] arr = new double[4];
             for (int i = 0; i < 4; i++)
             {
-                if(param.DoborPar.Nalicnik[i] > 0)
+                if (param.DoborPar.Nalicnik[i] > 0)
                     arr[i] = param.DoborPar.Nalicnik[i] + 5.6;
                 else
                     arr[i] = param.DoborPar.Nalicnik[i] + 25.6;
-            } 
-            return arr; 
+            }
+
+            return arr;
         }
     }
+
     public short[] Dobor_Nalichnik => param.DoborPar.Nalicnik;
 
     public Otkrivanie Otkrivanie => param.Otkrivanie.Value;
@@ -718,6 +782,7 @@ public class DM : IDM
             }
         }
     }
+
     public double Stvorka_Width(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
@@ -736,6 +801,7 @@ public class DM : IDM
             }
         }
     }
+
     public double LicevoyList_Height(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
@@ -754,6 +820,7 @@ public class DM : IDM
             }
         }
     }
+
     public double LicevoyList_Width(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
@@ -772,6 +839,7 @@ public class DM : IDM
             }
         }
     }
+
     public double VnutrenniyList_Height(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
@@ -790,6 +858,7 @@ public class DM : IDM
             }
         }
     }
+
     public double VnutrenniyList_Width(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
@@ -808,6 +877,7 @@ public class DM : IDM
             }
         }
     }
+
     public short LicevoyList_OtPola => Aktivka.LListOtPola;
 
     public short VnutrenniyList_OtPola => Aktivka.VListOtPola;
@@ -822,8 +892,9 @@ public class DM : IDM
             return Passivka.Vstavka_Width;
     }
 
-    public double VirezPoPritvoru_Height => 
+    public double VirezPoPritvoru_Height =>
         IsPassivka ? Passivka.VirezPoPritvoru_Height : 0;
+
     public double VirezPoPorogu_Height
     {
         get
@@ -838,6 +909,7 @@ public class DM : IDM
             }
         }
     }
+
     public double VirezPoPorogu_Width
     {
         get
@@ -852,6 +924,7 @@ public class DM : IDM
             }
         }
     }
+
     public short LeftGib(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
@@ -870,6 +943,7 @@ public class DM : IDM
             }
         }
     }
+
     public short RightGib(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
@@ -888,6 +962,7 @@ public class DM : IDM
             }
         }
     }
+
     public short UpGib(Stvorka stvorka)
     {
         if (stvorka == Stvorka.Активная)
@@ -907,7 +982,7 @@ public class DM : IDM
         }
     }
 
-    public bool IsTorcevayaPlastina(int pos) => 
+    public bool IsTorcevayaPlastina(int pos) =>
         torceviePlastini[pos] != null;
 
     public TorcevayaPlastina TorcevayaPlastina(int pos) =>
@@ -953,9 +1028,10 @@ public class DM : IDM
             return false;
         }
     }
+
     public bool IsKabelKanal(short index)
     {
-        
+
         if (index == 4 | index == 5)
         {
             return Korobka.KabelKanal(index);
@@ -973,6 +1049,7 @@ public class DM : IDM
             return false;
         }
     }
+
     public short VirezPodKvadrat_Count => (short)param.Kvadrat;
 
     public short SPorog_OtKraya => Aktivka.SPorog_OtKraya;
@@ -981,10 +1058,12 @@ public class DM : IDM
     {
         return Korobka.Nalichnik(((short)pos));
     }
+
     public short Stoyka_Type(Raspolozhenie pos)
     {
         return Korobka.TypeStoyki(pos);
     }
+
     public bool IsVipadPorog => param.Porog.Kod == 2;
 
     public bool IsPorogNestandart => Korobka.IsPorogNestandart;
@@ -993,11 +1072,12 @@ public class DM : IDM
     {
         return Korobka.IsObrezkaNalichnika(pos);
     }
+
     public bool IsAnkerInPritoloka => param.AMak;
 
     public bool IsStoykaZamkovaya(Raspolozhenie pos)
     {
-        if (IsPassivka) 
+        if (IsPassivka)
             return false;
 
         return Korobka.IsStoykaZamkovaya(pos);
@@ -1007,43 +1087,53 @@ public class DM : IDM
     {
         return Korobka.NalichnikStoyki(pos);
     }
+
     public short HeightStoyki(Raspolozhenie pos)
     {
         return Korobka.HightStoyki(pos);
     }
+
     public double GabaritStoyki(Raspolozhenie pos)
     {
-            if (Korobka.IsStoyka(pos)) return Korobka.GabaritStoyki(pos);
-            else return 0;
+        if (Korobka.IsStoyka(pos)) return Korobka.GabaritStoyki(pos);
+        else return 0;
     }
+
     public double GlubinaStoyki(Raspolozhenie pos)
     {
         return Korobka.GlubinaStoyki(pos);
     }
+
     public double StikovkaStoyki(Raspolozhenie pos)
     {
         return Korobka.UpStikovkaStoyki(pos);
     }
+
     public double DownStikovkaStoyki(Raspolozhenie pos)
     {
         return Korobka.DwnStikovkaStoyki(pos);
     }
+
     public double ZanizhenieStoyki(Raspolozhenie pos)
     {
         return Korobka.ZanizhenieStoyki(pos);
     }
+
     public short UpZaglushkaNSStoyki(Raspolozhenie pos)
     {
         return Korobka.UpZaglushkaNSStoyki(pos);
     }
+
     public short DownZaglushkaNSStoyki(Raspolozhenie pos)
     {
         return Korobka.DownZaglushkaNSStoyki(pos);
     }
+
     public double DownZanizhenieStoyki(Raspolozhenie pos)
     {
         return Korobka.DownZanizhenieStoyki(pos);
     }
+
     public double RazvertkaStoyki(Raspolozhenie pos)
     {
         return Korobka.RazvertkaStoyki(pos);
@@ -1051,18 +1141,18 @@ public class DM : IDM
 
     public double DAnkerStoyki(int num, Raspolozhenie pos)
     {
-        if(num == 0) return 0;
+        if (num == 0) return 0;
         if (num > 3) return 0;
 
         switch (num)
         {
-            case 1: 
+            case 1:
                 return Korobka.DAnker1Stoyki(pos);
 
-            case 2: 
+            case 2:
                 return Korobka.DAnker2Stoyki(pos);
 
-            case 3: 
+            case 3:
                 return Korobka.DAnker1Stoyki(pos);
         }
 
@@ -1073,31 +1163,96 @@ public class DM : IDM
     {
         return Korobka.DAnker1Stoyki(pos);
     }
+
     public double DAnker2Stoyki(Raspolozhenie pos)
     {
         return Korobka.DAnker2Stoyki(pos);
     }
+
     public double AnkerOtKraya(Raspolozhenie pos)
     {
         return Korobka.AnkerOtKraya(pos);
     }
+
     public short AnkerOtPola(short num)
     {
-        return Korobka.AnkerOtPola(num); 
+        return Korobka.AnkerOtPola(num);
     }
+
     public short RzkWidth(Raspolozhenie pos)
     {
         return Korobka.RzkWidth(pos);
     }
+
     public short RzkHeight(Raspolozhenie pos)
     {
         return Korobka.RzkHeight(pos);
     }
 
+    public int PetliAS_Count
+    {
+        get
+        {
+            if (!IsPassivka)
+                return param.PetliCount;
+
+            if (param.PetliCount % 2 == 0)
+                return param.PetliCount / 2;
+
+            return param.PetliCount / 2 + 1;
+        }
+    }
+
+    public int PetliPS_Count =>
+        param.PetliCount - PetliAS_Count;
+
+    public double Petli_OtstupDown => 
+        140 + LicevoyList_OtPola;
+
+    public double Petli_OtstupUp
+    {
+        get
+        {
+            if (param.Otkrivanie.IsNO)
+            {
+                if (Stoyka_Type(Raspolozhenie.Верх) == 2 || Stoyka_Type(Raspolozhenie.Верх) == 4)
+                    return 227 + 15;
+                return 227;
+            }
+
+            return 223;
+        }
+    }
+
+    public int PetliCountOnStoyka(Raspolozhenie pos)
+    {
+        if(ini.ReadKey("Virez", "DM_Marker-Petli").Equals("0"))
+            return 0;
+
+        if (!IsPassivka)
+        {
+            if (IsStoykaZamkovaya(pos)) 
+                return 0;
+            return PetliAS_Count;
+        }
+
+        if (pos == Raspolozhenie.Лев)
+        {
+            if (param.Otkrivanie.Value == Otkrivanie.Левое || param.Otkrivanie.Value == Otkrivanie.ЛевоеВО)
+                return PetliAS_Count;
+            return PetliPS_Count;
+        }
+
+        if (param.Otkrivanie.Value == Otkrivanie.Левое || param.Otkrivanie.Value == Otkrivanie.ЛевоеВО)
+            return PetliPS_Count;
+        return PetliAS_Count;
+    }
+
     public bool IsOkno(short num)
     {
-        return Okna[num] != null; 
+        return Okna[num] != null;
     }
+
     public short Okno_Height(short num, short pos)
     {
         if (IsOkno(num))
@@ -1116,18 +1271,21 @@ public class DM : IDM
             return 0;
         }
     }
+
     public short Okno_Width(short num, short pos)
     {
         if (IsOkno(num))
             return pos == 0 ? Okna[num].WVirLL : Okna[num].WVirVL;
         return 0;
     }
+
     public double Okno_OtKraya(short num, short pos)
     {
         if (IsOkno(num))
             return Okna[num].OtCraya(pos);
         return 0;
     }
+
     public double Okno_OtPola(short num, short pos)
     {
         if (IsOkno(num))
@@ -1154,17 +1312,19 @@ public class DM : IDM
     {
         return !(Reshetki[num] == null);
     }
+
     public eReshetka Reshetka_Type(short num)
     {
-            if (IsReshetka(num))
-            {
-                return Reshetki[num].Type;
-            }
-            else
-            {
-                return 0;
-            }
+        if (IsReshetka(num))
+        {
+            return Reshetki[num].Type;
+        }
+        else
+        {
+            return 0;
+        }
     }
+
     public short Reshetka_Height(short num)
     {
         if (IsReshetka(num))
@@ -1176,6 +1336,7 @@ public class DM : IDM
             return 0;
         }
     }
+
     public short Reshetka_Width(short num)
     {
         if (IsReshetka(num))
@@ -1187,6 +1348,7 @@ public class DM : IDM
             return 0;
         }
     }
+
     public double Reshetka_OtKraya(short num)
     {
         if (IsReshetka(num))
@@ -1198,6 +1360,7 @@ public class DM : IDM
             return 0;
         }
     }
+
     public short Reshetka_OtPola(short num)
     {
         if (IsReshetka(num))
@@ -1209,6 +1372,7 @@ public class DM : IDM
             return 0;
         }
     }
+
     public short Reshetka_Virezi_Count(short num)
     {
         if (IsReshetka(num))
@@ -1220,6 +1384,7 @@ public class DM : IDM
             return 0;
         }
     }
+
     public double Reshetka_Virezi_Otstup(short num)
     {
         if (IsReshetka(num))
@@ -1245,6 +1410,7 @@ public class DM : IDM
     {
         return Furniture.Zamok(num);
     }
+
     public short Zamok_Kod(short num, short konf)
     {
         if (konf == 1 | konf == 2 | konf == 6)
@@ -1264,17 +1430,19 @@ public class DM : IDM
             return 0;
         }
     }
+
     public double Zamok_Otstup(short num)
     {
-            switch (param.Otkrivanie.Value)
-            {
-                case Otkrivanie.Правое:
-                case Otkrivanie.ПравоеВО:
-                    return Furniture.Zamok_Otstup(num, Korobka.TypeStoyki(Raspolozhenie.Лев));
-                default:
-                    return Furniture.Zamok_Otstup(num, Korobka.TypeStoyki(Raspolozhenie.Прав));
-            }
+        switch (param.Otkrivanie.Value)
+        {
+            case Otkrivanie.Правое:
+            case Otkrivanie.ПравоеВО:
+                return Furniture.Zamok_Otstup(num, Korobka.TypeStoyki(Raspolozhenie.Лев));
+            default:
+                return Furniture.Zamok_Otstup(num, Korobka.TypeStoyki(Raspolozhenie.Прав));
+        }
     }
+
     public double Zamok_OtKraya(short num, short pos)
     {
         if (Furniture.IsZamok(num))
@@ -1286,26 +1454,32 @@ public class DM : IDM
             return 0;
         }
     }
+
     public double Zamok_OtTela(short num)
     {
         return Furniture.Zamok_OtTela(num);
     }
+
     public int Zamok_OtPola(short num)
     {
         return Furniture.Zamok_OtPola(num);
     }
+
     public double Zamok_Otvetka_OtPola(short num)
     {
         return Furniture.Zamok_Otvetka_OtPola(num);
     }
+
     public string Zamok_Name(short num)
     {
         return Furniture.Zamok_Name(num);
     }
+
     public string[] Zamok_VirezNames(short num)
     {
         return Furniture.Zamok_VirezNames(num);
     }
+
     public string[] Zamok_SketchNames(short num)
     {
         return Furniture.Zamok_SketchNames(num);
@@ -1353,6 +1527,7 @@ public class DM : IDM
     {
         return Furniture.Kodoviy_OtKraya(pos);
     }
+
     public double Kodoviy_OtTela => Furniture.Kodoviy_OtTela;
 
     public short Kodoviy_OtPola => Furniture.Kodoviy_OtPola;
@@ -1386,30 +1561,37 @@ public class DM : IDM
     {
         return Furniture.IsRuchka(stvorka, num);
     }
+
     public short Ruchka_Kod(short stvorka, short num)
     {
         return Furniture.Ruchka_Kod(stvorka, num);
     }
+
     public double Ruchka_OtKraya(short stvorka, short num, short pos)
     {
         return Furniture.Ruchka_OtKraya(stvorka, num, pos);
     }
+
     public double Ruchka_OtLeftKraya(short stvorka, short num, short pos)
     {
         return Furniture.Ruchka_OtLeftKraya(stvorka, num, pos);
     }
+
     public short Ruchka_OtPola(short stvorka, short num)
     {
         return Furniture.Ruchka_OtPola(stvorka, num);
     }
+
     public short Ruchka_Mezhosevoe(short stvorka, short num)
     {
         return Furniture.Ruchka_Mezhosevoe(stvorka, num);
     }
+
     public string Ruchka_VirezName(short stvorka, short num)
     {
         return Furniture.Ruchka_VirezName(stvorka, num);
     }
+
     public string Ruchka_SketchName(short stvorka, short num)
     {
         return Furniture.Ruchka_SketchName(stvorka, num);
@@ -1417,23 +1599,24 @@ public class DM : IDM
 
     public short Zadvizhka_Kod(short konf)
     {
-            if (konf == 1 | konf == 2)
-            {
-                return Furniture.Zadvizhka_Kod(0);
-            }
-            else if (konf == 4)
-            {
-                return Korobka.Zadvizhka(Raspolozhenie.Лев);
-            }
-            else if (konf == 5)
-            {
-                return Korobka.Zadvizhka(Raspolozhenie.Прав);
-            }
-            else
-            {
-                return 0;
-            }
+        if (konf == 1 | konf == 2)
+        {
+            return Furniture.Zadvizhka_Kod(0);
+        }
+        else if (konf == 4)
+        {
+            return Korobka.Zadvizhka(Raspolozhenie.Лев);
+        }
+        else if (konf == 5)
+        {
+            return Korobka.Zadvizhka(Raspolozhenie.Прав);
+        }
+        else
+        {
+            return 0;
+        }
     }
+
     public double Zadvizhka_OtKrayaVA => Furniture.Zadvizhka_OtKpayaVA(0);
 
     public double Zadvizhka_Vertushok_OtKraya
@@ -1445,16 +1628,18 @@ public class DM : IDM
             return Aktivka.LList_Width - Furniture.Zadvizhka_Vertushok_OtKraya(0);
         }
     }
+
     public double Zadvizhka_Otstup(short stoykaType)
     {
         return Furniture.Zadvizhka_Otstup(0, stoykaType);
     }
+
     public short Zadvizhka_OtPola => Furniture.Zadvizhka_OtPola(0);
 
-    public int Zadvizhka_OnList => 
+    public int Zadvizhka_OnList =>
         Furniture.Zadvizhka_OnList(0);
 
-    public double Zadvizhka_OtKrayaLP => 
+    public double Zadvizhka_OtKrayaLP =>
         Furniture.Zadvizhka_OtKrayaLP(0);
 
     public bool IsSdvigoviy => Furniture.IsSdvigoviy();
@@ -1464,6 +1649,7 @@ public class DM : IDM
     {
         return Furniture.IsGlazok(num);
     }
+
     public double Glazok_OtKraya(short num, short pos)
     {
         if (Furniture.Glazok_Raspolozhenie(num) == GlazokRaspolozhenie.По_центру)
@@ -1483,7 +1669,9 @@ public class DM : IDM
             {
                 if (param.Thick_VL == 2)
                 {
-                    return Passivka is null ? Aktivka.VList_Width / 2 : ((Aktivka.VList_Width + k62 + (k70/2)) / 2) - (52 + k62/2);
+                    return Passivka is null
+                        ? Aktivka.VList_Width / 2
+                        : ((Aktivka.VList_Width + k62 + (k70 / 2)) / 2) - (52 + k62 / 2);
                 }
                 else
                 {
@@ -1496,6 +1684,7 @@ public class DM : IDM
             return Furniture.Zamok_OtKraya(1, pos);
         }
     }
+
     public double Glazok_OtPola(short num)
     {
         if (IsGlazok(num))
@@ -1551,14 +1740,18 @@ public class DM : IDM
     {
         return Furniture.IsTorcShpingalet(num);
     }
+
     public bool IsUpVirezShpingalet =>
         param.VirezShpingalet && IsTorcShpingalet(0) && _virezShpin;
+
     public bool IsDownVirezShpingalet =>
         param.VirezShpingalet && IsTorcShpingalet(1) && _virezShpin;
+
     public bool IsOtvetkaTorcShpin(Raspolozhenie pos)
     {
         return Korobka.OtvetkaTorcShpin(pos);
     }
+
     public short TorcSpingalet_Count => Furniture.TorcShpingalet_Count;
 
     public double TorcShpingalet_OtKraya => Furniture.TorcShpingalet_OtKraya;
@@ -1573,6 +1766,7 @@ public class DM : IDM
     }
 
     public bool NSasTS => param.NSasTS;
+
     public double TPWidth
     {
         get
@@ -1604,12 +1798,14 @@ public class DM : IDM
             return false;
         }
     }
+
     public float APanOtNiza => Furniture.APanOtNiza;
 
     public bool IsOtvAntipan(short pos)
     {
         return Furniture.IsOtvAntipan(pos);
     }
+
     public double OtvAntipan_Diam(short pos)
     {
         if (IsOtvAntipan(pos))
@@ -1617,13 +1813,15 @@ public class DM : IDM
         else
             return 0;
     }
+
     public double OtvAntipan_OtKraya(short pos)
     {
         return Furniture.OtvAntipan_OtKraya(pos);
     }
+
     public double OtvAntipan_Otstup(short pos)
     {
-        return Furniture.OtvAntipan_Otstup(pos); 
+        return Furniture.OtvAntipan_Otstup(pos);
     }
 
     public bool IsFramuga(Raspolozhenie pos)
@@ -1631,28 +1829,36 @@ public class DM : IDM
         if (Framugi != null & Framugi.Length > 0) return Framugi[(short)pos] != null;
         else return false;
     }
+
     public Framuga Framuga(Raspolozhenie pos)
     {
         if (IsFramuga(pos)) return Framugi[(short)pos];
         else return null;
     }
 
-    public bool IsTermoblock(short num) => 
+    public bool IsTermoblock(short num) =>
         Furniture.IsTermoblock(num);
 
-    public bool IsShild => 
+    public bool IsShild =>
         param.Shild && ini.ReadKey("Virez", "DM_SHILD_SW").Equals("1");
 
     public double ShildOtPola => shildOtPola;
-    
+
     public TermoblockDatas GetTermoblock(short num) =>
         Furniture.GetTermoblock(num);
 
     public OtboynayaPlastina[] OtboynayaPlastini => otboynayaPlastini.ToArray();
 
-    public bool IsUpor => 
-        (param.Thick_LL == 2 || param.Thick_VL == 2) 
-            ? false : true;
+    public bool IsUpor 
+    {
+        get
+        {
+            if(ini.ReadKey("List", "DM_Upor_Sw").Equals("1"))
+                return (param.Thick_LL == 2 || param.Thick_VL == 2) ? false : true;
+            return false;
+        }
+    }
+
 
     public int PritvorPorog
     {

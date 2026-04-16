@@ -9,6 +9,8 @@ namespace COM_DoorsLibrary
         public abstract string Name { get; }
         public abstract string Description { get; }
         public string ModelName { get; }
+        public abstract bool IsLicPanel { get; }
+        public abstract bool IsCG { get; }
         public string TemplateFileName => 
             $"{Data.Num}_{Name}";
         public abstract string MaketDir { get; }
@@ -86,16 +88,16 @@ namespace COM_DoorsLibrary
             switch (Data.Porog)
             {
                 case (short)PorogNames.Порог_40:
-                    return "POR_40";
+                    return "Порог_40";
                 case (short)PorogNames.Порог_20_мм:
-                    return "POR_20";
+                    return "Порог_20";
                 case (short)PorogNames.Порог_26_плоский:
-                    return "POR_26";
+                    return "Порог_26";
                 case (short)PorogNames.Порог_14:
-                    return "POR_14";
+                    return "Порог_14";
                 case (short)PorogNames.Порог_25_скос:
                 case (short)PorogNames.Порог_25:
-                    return "POR_25";
+                    return "Порог_25";
                 default:
                     throw new ArgumentException(
                         $"{Data.Num} - Порог {Data.Porog} для {ModelName} не определен");
@@ -153,12 +155,14 @@ namespace COM_DoorsLibrary
         public abstract double GS_Length { get; }
 
         public abstract double RZK_Length { get; }
+        public abstract double RZK_PR_Length { get; }
 
         public abstract double POR_Pered { get; }
 
         public abstract double POR_Zad { get; }
 
         public abstract double RZP_Lengnth { get; }
+        public abstract double Styazh_Lengnth { get; }
 
         public abstract double Nalichnik(Raspolozhenie pos);
 
@@ -204,6 +208,7 @@ namespace COM_DoorsLibrary
         Порог,
         РЖК_Замковая,
         РЖК_Петлевая,
+        РЖК_Прит_Пор,
         РЖ_полотна
     }
 }

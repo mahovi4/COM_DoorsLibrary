@@ -6,6 +6,8 @@ namespace COM_DoorsLibrary
     {
         public override string Name => "КВ08";
         public override string Description => "РИО-Метал_Метал";
+        public override bool IsLicPanel => false;
+        public override bool IsCG => false;
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[СТ-КВ08]";
         public override double LL_OtPola => 0;
         public override double LL_Height => Data.Height - 29;
@@ -19,9 +21,11 @@ namespace COM_DoorsLibrary
         public override double VS_Length => Data.Height;
         public override double GS_Length => Data.Width - 69;
         public override double RZK_Length => 0;
+        public override double RZK_PR_Length => 0;
         public override double POR_Pered => 0;
         public override double POR_Zad => 0;
         public override double RZP_Lengnth => 0;
+        public override double Styazh_Lengnth => 0;
 
         public override double Nalichnik(Raspolozhenie pos)
         {
@@ -68,24 +72,24 @@ namespace COM_DoorsLibrary
         public KV08(TableData data, Constants cons)
             : base(data, cons)
         {
-            Parts.Add(new KVDPartInfo(Command_KVD.Лицевой_лист, "[СТ-КВ08]_Лицевой_лист.SLDPRT", $"{TemplateFileName}_LL"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Внутренний_лист, "[СТ-КВ08]_Внутренний_лист.SLDPRT", $"{TemplateFileName}_VL"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Верхний_профиль, "[СТ-КВ08]_Торцевой_профиль.SLDPRT", $"{TemplateFileName}_TP"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Лицевой_лист, "[СТ-КВ08]_Лицевой_лист.SLDPRT", $"{TemplateFileName}_Лист лицевой"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Внутренний_лист, "[СТ-КВ08]_Внутренний_лист.SLDPRT", $"{TemplateFileName}_Лист внутренний"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Верхний_профиль, "[СТ-КВ08]_Торцевой_профиль.SLDPRT", $"{TemplateFileName}_Профиль торцевой"));
             Parts.Add(new KVDPartInfo(Command_KVD.Замковая_стойка, 
                 (Data.Otkrivanie== Otkrivanie.Левое || Data.Otkrivanie == Otkrivanie.Правое 
                     ? "[СТ-КВ08]_Стойка_ЗС_ПС.SLDPRT" 
                     : "[СТ-КВ08-К3]_Стойка_ЗС_ПС.SLDPRT"), 
-                $"{TemplateFileName}_{GetNalichikKod(GetNalichnik())}_{GetPositionKod()}_ZS"));
+                $"{TemplateFileName}_{GetNalichikKod(GetNalichnik())}_{GetPositionKod()}_Стойка замковая"));
             Parts.Add(new KVDPartInfo(Command_KVD.Петлевая_стойка,
                 (Data.Otkrivanie == Otkrivanie.Левое || Data.Otkrivanie == Otkrivanie.Правое
                     ? "[СТ-КВ08]_Стойка_ЗС_ПС.SLDPRT"
                     : "[СТ-КВ08-К3]_Стойка_ЗС_ПС.SLDPRT"),
-                $"{TemplateFileName}_{GetNalichikKod(GetNalichnik(false))}_{GetPositionKod(false)}_PS"));
+                $"{TemplateFileName}_{GetNalichikKod(GetNalichnik(false))}_{GetPositionKod(false)}_Стойка петлевая"));
             Parts.Add(new KVDPartInfo(Command_KVD.Притолока,
                 (Data.Otkrivanie == Otkrivanie.Левое || Data.Otkrivanie == Otkrivanie.Правое
                     ? "[СТ-КВ08]_Притолока.SLDPRT"
                     : "[СТ-КВ08-К3]_Притолока.SLDPRT"),
-                $"{TemplateFileName}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_US"));
+                $"{TemplateFileName}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_Притолока"));
             Parts.Add(new KVDPartInfo(Command_KVD.Порог,
                 (Data.Otkrivanie == Otkrivanie.Левое || Data.Otkrivanie == Otkrivanie.Правое
                     ? "[СТ-КВ08]_Порог.SLDPRT"

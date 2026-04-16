@@ -6,6 +6,8 @@ namespace COM_DoorsLibrary
     {
         public override string Name => "КВ07";
         public override string Description => "Жардин";
+        public override bool IsLicPanel => true;
+        public override bool IsCG => true;
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[СТ-КВ07]";
         public override double LL_OtPola => 0;
         public override double LL_Height => Data.Height - 45;
@@ -19,9 +21,11 @@ namespace COM_DoorsLibrary
         public override double VS_Length => Data.Height;
         public override double GS_Length => Data.Width - 69;
         public override double RZK_Length => 0;
+        public override double RZK_PR_Length => 0;
         public override double POR_Pered => 0;
         public override double POR_Zad => 0;
         public override double RZP_Lengnth => 0;
+        public override double Styazh_Lengnth => 0;
 
         public override double Nalichnik(Raspolozhenie pos)
         {

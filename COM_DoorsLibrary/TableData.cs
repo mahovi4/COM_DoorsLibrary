@@ -393,6 +393,7 @@ public class TableData : ITableData
     private bool _AMak = false;                                 //Наличие анкеров в макушке
 
     //---Фурнитура------------------------------------------------------------------------------------------------------------------------------
+    private int _PetliCount = 2;
     private ZamokParam[] _Zamok = new ZamokParam[2];         //Варианты замков
     private RuchkaParam[] _Ruchka_AS = new RuchkaParam[2];      //Варианты ручек активной створки
     private RuchkaParam[] _Ruchka_PS = new RuchkaParam[2];      //Варианты ручек пассивной створки
@@ -1473,6 +1474,12 @@ public class TableData : ITableData
         set => _Thick_VL = value;
     }
 
+    public int PetliCount
+    {
+        get => _PetliCount;
+        set => _PetliCount = value;
+    }
+
     public bool IsOknoArr {
         get {
             if (_Okno != null && _Okno.Length > 0) return true;
@@ -1821,6 +1828,7 @@ public class TableData : ITableData
                 Intek = _Intek,
                 Razbor = _Razbor,
                 AMak = _AMak,
+                PetliCount = _PetliCount,
                 Zamok = _Zamok,
                 RuchkaAS = _Ruchka_AS,
                 RuchkaPS = _Ruchka_PS,
@@ -2003,6 +2011,16 @@ public struct OtkrivanieParam
     {
         Value = otkrivanie;
         FromTable = fromTable;
+    }
+
+    public bool IsNO
+    {
+        get
+        {
+            if (Value == Otkrivanie.Левое || Value == Otkrivanie.Правое)
+                return true;
+            return false;
+        }
     }
 }
 public struct WAktivParam
@@ -2575,6 +2593,7 @@ public struct DMParam
     public bool AMak;                                 //Наличие анкеров в макушке
 
     //---Фурнитура-------------------------------------------------------------------------------------------------------------------------------------
+    public int PetliCount;
     public ZamokParam[] Zamok;         //Варианты замков
     public RuchkaParam[] RuchkaAS;      //Варианты ручек
     public RuchkaParam[] RuchkaPS;      //Варианты ручек

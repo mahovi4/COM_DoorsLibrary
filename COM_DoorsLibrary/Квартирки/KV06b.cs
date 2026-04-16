@@ -6,22 +6,26 @@ namespace COM_DoorsLibrary
     {
         public override string Name => "КВ06b";
         public override string Description => "Айсберг, Елена, Венера и т.д.";
+        public override bool IsLicPanel => true;
+        public override bool IsCG => true;
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[СТ-КВ06]\";
         public override double LL_OtPola => 0;
-        public override double LL_Height => Data.Height - 43;
-        public override double LL_Width => Data.Width + 138;
+        public override double LL_Height => Data.Height - 44;
+        public override double LL_Width => Data.Width + 136;
         public override double VL_Height => 0;
         public override double VL_Width => 0;
-        public override double VP_Length => Data.Height - 76.5;
-        public override double GP_Length => Data.Width - 54;
-        public override double MP_Length => Data.Width - 84.5;
+        public override double VP_Length => Data.Height - 76; //Уголок монтажный петлевой
+        public override double GP_Length => Data.Width - 56; //Торцевые профили
+        public override double MP_Length => Data.Width - 88; //Уголок монтажный нижний
         public override double ProtivosOtstup => 231;
         public override double VS_Length => Data.Height;
         public override double GS_Length => Data.Width - 69;
         public override double RZK_Length => 0;
+        public override double RZK_PR_Length => 0;
         public override double POR_Pered => 0;
         public override double POR_Zad => 0;
         public override double RZP_Lengnth => 0;
+        public override double Styazh_Lengnth => 0;
 
         public override double Nalichnik(Raspolozhenie pos)
         {
@@ -53,36 +57,15 @@ namespace COM_DoorsLibrary
         {
             var template = TemplateFileName.Substring(0, TemplateFileName.Length - 1);
 
-            Parts.Add(new KVDPartInfo(Command_KVD.Лицевой_лист, "[СТ-КВ06]_Лицевой_лист.SLDPRT", $"{template}_LL"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Монтажный_профиль_нижний, "[СТ-КВ06]_Монтажный_уголок.SLDPRT", $"{template}_M"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Верхний_профиль, "[СТ-КВ06]_Торцевой_профиль.SLDPRT", $"{template}_T"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Замковая_стойка, "[СТ-КВ06]_Стойка_ЗС_ПС.SLDPRT", $"{template}_{GetNalichikKod(GetNalichnik())}_{GetPositionKod()}_ZS"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Петлевая_стойка, "[СТ-КВ06]_Стойка_ЗС_ПС.SLDPRT", $"{template}_{GetNalichikKod(GetNalichnik(false))}_{GetPositionKod(false)}_PS"));
-            Parts.Add(new KVDPartInfo(Command_KVD.Притолока, "[СТ-КВ06]_Притолока.SLDPRT", $"{template}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_US"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Лицевой_лист, "[СТ-КВ06]_Лицевой_лист.SLDPRT", $"{template}_Лицевой лист"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Монтажный_профиль_петлевой, "[СТ-КВ06]_Монтажный_уголок_петлевой.SLDPRT", $"{template}_Уголок монтажный петлевой"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Монтажный_профиль_нижний, "[СТ-КВ06]_Монтажный_уголок_нижний.SLDPRT", $"{template}_Уголок монтажный нижний"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Верхний_профиль, "[СТ-КВ06]_Торцевой_профиль_верхний.SLDPRT", $"{template}_Торцевой профиль верхний"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Нижний_профиль, "[СТ-КВ06]_Торцевой_профиль_нижний.SLDPRT", $"{template}_Торцевой профиль нижний"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Замковая_стойка, "[СТ-КВ06]_Стойка_ЗС_ПС.SLDPRT", $"{template}_{GetNalichikKod(GetNalichnik())}_{GetPositionKod()}_Стойка замковая"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Петлевая_стойка, "[СТ-КВ06]_Стойка_ЗС_ПС.SLDPRT", $"{template}_{GetNalichikKod(GetNalichnik(false))}_{GetPositionKod(false)}_Стойка петлевая"));
+            Parts.Add(new KVDPartInfo(Command_KVD.Притолока, "[СТ-КВ06]_Притолока.SLDPRT", $"{template}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_Притолока"));
             Parts.Add(new KVDPartInfo(Command_KVD.Порог, "[СТ-КВ06]_Порог.SLDPRT", $"{template}_{GetPorogKod()}"));
-
-            //var llPath = $@"\{Name}\ЛИЦЕВОЙ ЛИСТ\{Data.Height}\{Data.Height}x{Data.Width}_[СТ-КВ06]_L.DXF";
-
-            //var mpPath = $@"\{Name}\ПРОФИЛИ\{Data.Width}_[СТ-КВ06]_M.DXF";
-            //var tpPath = $@"\{Name}\ПРОФИЛИ\{Data.Width}_[СТ-КВ06]_T.DXF";
-
-            //var zsPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\Вертикальные\{Data.Height}_[СТ-КВ06]_{GetNalichikKod(GetNalichnik())}_Z.DXF";
-            //var psPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\Вертикальные\{Data.Height}_[СТ-КВ06]_{GetNalichikKod(GetNalichnik(false))}_P.DXF";
-            //var usPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\Горизонтальные\{Data.Width}_[СТ-КВ06]_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_G.DXF";
-            //var dsPath = $@"\{Name}\ЭЛЕМЕНТЫ КОРОБКИ\Горизонтальные\{Data.Width}_[СТ-КВ06]_{GetPorogKod()}.DXF";
-
-            //pathes = new Dictionary<string, string>
-            //{
-            //    {$"{template}_LL.DXF", llPath},
-
-            //    {$"{template}_M.DXF", mpPath},
-            //    {$"{template}_T.DXF", tpPath},
-
-            //    {$"{template}_{GetNalichikKod(GetNalichnik())}_{GetPositionKod()}_ZS.DXF", zsPath},
-            //    {$"{template}_{GetNalichikKod(GetNalichnik(false))}_{GetPositionKod(false)}_PS.DXF", psPath},
-            //    {$"{template}_{GetNalichikKod(Data.Nalichniki[(int)Raspolozhenie.Верх])}_US.DXF", usPath},
-            //    {$"{template}_{GetPorogKod()}.DXF", dsPath}
-            //};
         }
     }
 }
