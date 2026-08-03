@@ -11,12 +11,12 @@ namespace COM_DoorsLibrary
         public override string MaketDir => @"k:\Заготовки, шаблоны\Квартирные двери\[СТ-КВ06]\";
         public override double LL_OtPola => 0;
         public override double LL_Height => Data.Height - 44;
-        public override double LL_Width => Data.Width + 136;
+        public override double LL_Width => Data.Width + 137;
         public override double VL_Height => 0;
         public override double VL_Width => 0;
         public override double VP_Length => Data.Height - 76; //Уголок монтажный петлевой
-        public override double GP_Length => Data.Width - 56; //Торцевые профили
-        public override double MP_Length => Data.Width - 88; //Уголок монтажный нижний
+        public override double GP_Length => Data.Width - 54.5; //Торцевые профили
+        public override double MP_Length => Data.Width - 86.5; //Уголок монтажный нижний
         public override double ProtivosOtstup => 231;
         public override double VS_Length => Data.Height;
         public override double GS_Length => Data.Width - 69;

@@ -122,7 +122,7 @@ public interface IEODL
 [Description("Класс расчета однолистовых дверей.")]
 public class ODL : IODL
 {
-    private short _Height, _Width, HLD, WlA, WLP, ListOtPola, ZPOtPola, HZP, HZPP, WZPA, HZPS, WZPP, WPP, ZamokOtPola, RuchkaOtPola, Do3Ankera;
+    private short _Height, _Width, HLD, WlA, WLP, ListOtPola, ZPOtPola, HZP, HZPP, WZPA, HZPS, WZPP, WPP, ZamokOtPola, RuchkaOtPola, Do3Ankera, wProfZA, wProfZP, wProf, pritvor, pritvorD;
     private double WAktiv, WPassiv, WHS, ZamokOtKraya, TorcShpingalet;
     private string _Errors, _Problems, ruchkaName, zamokName;
     private readonly double[] nalichniki = new double[4];
@@ -229,31 +229,39 @@ public class ODL : IODL
         }
 
         //Определение расстояния от пола до лицевого листа и замкового профиля
-        if (param.Porog.Kod == 20)
+        if (param.Nalichniki[(int)Raspolozhenie.Ниж] > 0)
+        {
+            ListOtPola = short.Parse(ini.ReadKey("ODL", "ODL_LL_OT_POLA_PR"));
+            pritvorD = short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_PR"));
+        }
+        else if (param.Porog.Kod == 20)
         {
             ListOtPola = short.Parse(ini.ReadKey("ODL", "ODL_LL_OT_POLA_20"));
-            ZPOtPola = (short)(ListOtPola + short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_20")));
+            pritvorD = short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_20"));
         }
         else if (param.Porog.Kod == 14)
         {
             ListOtPola = short.Parse(ini.ReadKey("ODL", "ODL_LL_OT_POLA_14"));
-            ZPOtPola = (short)(ListOtPola + short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_14")));
+            pritvorD = short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_14"));
         }
         else if (param.Porog.Kod == 25)
         {
-            ListOtPola = param.Otkrivanie.Value == Otkrivanie.Левое || param.Otkrivanie.Value == Otkrivanie.Правое 
+            ListOtPola = param.Otkrivanie.IsNO
                 ? short.Parse(ini.ReadKey("ODL", "ODL_LL_OT_POLA_25"))
                 : short.Parse(ini.ReadKey("ODL", "ODL_LL_OT_POLA_25_VO"));
-            ZPOtPola = param.Otkrivanie.Value == Otkrivanie.Левое || param.Otkrivanie.Value == Otkrivanie.Правое 
-                ? (short)(ListOtPola + short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_25")))
-                : (short)(ListOtPola + short.Parse(ini.ReadKey("Profili", "ODL_ZP_Z_PRITVOR_VO")));
+            pritvorD = param.Otkrivanie.IsNO
+                ? short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_25"))
+                : short.Parse(ini.ReadKey("Profili", "ODL_ZP_Z_PRITVOR_VO"));
         }
         else if (param.Porog.Kod == 0)
         {
             ListOtPola = short.Parse(ini.ReadKey("ODL", "ODL_LL_OT_POLA_0"));
-            ZPOtPola = (short)(ListOtPola + short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_0")));
+            pritvorD = short.Parse(ini.ReadKey("Profili", "ODL_ZP_OT_LISTA_0"));
         }
-        
+        ZPOtPola = (short)(ListOtPola + pritvorD);
+
+        pritvor = (short)(param.Otkrivanie.IsNO ? 16 : 3);
+
         //Высота замкового (петлевого) профиля
         if (param.Nalichniki[1] == 0)
         {
@@ -284,12 +292,19 @@ public class ODL : IODL
         if (param.WAktiv.Value > 0) HZPP = (short)(HZP - 10);
 
         //Ширина развертки замкового профиля
-        if (param.Otkrivanie.Value == Otkrivanie.ЛевоеВО | param.Otkrivanie.Value == Otkrivanie.ПравоеВО)
+        if (!param.Otkrivanie.IsNO)
         {
-            if(param.Ruchka[0].Kod == (int)RuchkaNames.Ручка_Потайная)
+            if (param.Ruchka[0].Kod == (int)RuchkaNames.Ручка_Потайная)
+            {
                 WZPA = short.Parse(ini.ReadKey("Profili", "ODL_ZP_RAZV_RP"));
+                wProfZA = short.Parse(ini.ReadKey("Profili", "ODL_W_AZP_R"));
+            }
             else
+            {
                 WZPA = short.Parse(ini.ReadKey("Profili", "ODL_ZP_RAZV_VO"));
+                wProfZA = short.Parse(ini.ReadKey("Profili", "ODL_W_AZP_S"));
+            }
+
             if (WPassiv > 0)
                 WZPP = short.Parse(ini.ReadKey("Profili", "ODL_ZPP_RAZV_VO"));
             else
@@ -298,14 +313,24 @@ public class ODL : IODL
         else
         {
             if (param.Ruchka[0].Kod == (int)RuchkaNames.Ручка_Потайная)
+            {
                 WZPA = short.Parse(ini.ReadKey("Profili", "ODL_ZP_RAZV_RP"));
+                wProfZA = short.Parse(ini.ReadKey("Profili", "ODL_W_AZP_R"));
+            }
             else
+            {
                 WZPA = short.Parse(ini.ReadKey("Profili", "ODL_ZP_RAZV"));
+                wProfZA = short.Parse(ini.ReadKey("Profili", "ODL_W_AZP_S"));
+            }
+
             if (WPassiv > 0)
                 WZPP = short.Parse(ini.ReadKey("Profili", "ODL_ZPP_RAZV"));
             else
                 WZPP = 0;
         }
+
+        wProfZP = WPassiv > 0 ? short.Parse(ini.ReadKey("Profili", "ODL_W_PZP_S")) : (short)0;
+        wProf = short.Parse(ini.ReadKey("Profili", "ODL_W_P_S"));
 
         //Ширина развертки петлевоого профиля
         WPP = short.Parse(ini.ReadKey("Profili", "ODL_PP_RAZV"));
@@ -529,6 +554,13 @@ public class ODL : IODL
             case 9:
                 return "(50)POR" + Porog + "_" + param.Num;
 
+            case 10:
+                return $"ВерРЖ_Акт_{param.Num}";
+            case 11:
+                return $"ГорРЖ_Акт_{param.Num}";
+            case 12:
+                return $"ГорРЖ_Пас_{param.Num}";
+
             default:
                 return "";
         }
@@ -596,6 +628,17 @@ public class ODL : IODL
             return WPP;
         }
     }
+
+    public double GorRZPLength(Stvorka stvorka)
+    {
+        var WZP = stvorka == Stvorka.Активная ? wProfZA : wProfZP;
+
+        return LicevoyList_Width(stvorka) - WZP - wProf - pritvor * 2 - 0.5;
+    }
+
+    public double VertRZPLength => 
+        LicevoyList_Height - pritvorD - pritvor - wProf * 2 - 0.5;
+
     public short VertStoyka_Height
     {
         get { return HZPS; }
@@ -736,5 +779,5 @@ public class ODL : IODL
         return 0;
     }
 
-    public int FileCount => IsPassivka ? 8 : 7;
+    public int FileCount => IsPassivka ? 12 : 9;
 }

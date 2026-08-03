@@ -558,8 +558,8 @@ public class DM : IDM
             //{
             //    Errors = "Дверь EIS не может быть с выпадающим порогом. ";
             //}
-            else if (param.Porog.Kod == 14)
-                Errors = "Дверь EIS не может быть с 14 порогом. ";
+            //else if (param.Porog.Kod == 14)
+            //    Errors = "Дверь EIS не может быть с 14 порогом. ";
         }
 
         if (Passivka != null)
@@ -1207,7 +1207,7 @@ public class DM : IDM
         param.PetliCount - PetliAS_Count;
 
     public double Petli_OtstupDown => 
-        140 + LicevoyList_OtPola;
+        param.Nalichniki[(int)Raspolozhenie.Ниж] > 0 ? 40 + LicevoyList_OtPola : 140 + LicevoyList_OtPola;
 
     public double Petli_OtstupUp
     {
@@ -1925,4 +1925,14 @@ public class DM : IDM
         cons.CompareKod(param.Kod, "(62)") ? 191 : 
         cons.CompareKod(param.Kod, "(70)") ? 207 : 
         173;
+
+    public bool IsPerfVoda
+    {
+        get
+        {
+            var sw = ini.ReadKey("Virez", "DM_Perf_Voda").Equals("0") ? false : true;
+
+            return sw && k62 > 0;
+        }
+    }
 }

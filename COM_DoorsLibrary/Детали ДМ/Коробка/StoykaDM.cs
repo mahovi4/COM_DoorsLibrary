@@ -257,7 +257,8 @@ internal class StoykaDM : DetalKorobkiDM
             //    Rast3Anker = 2000;
             //}
         }
-        Rast3Anker = (short)(nalichniki[(short)Raspolozhenie.Ниж] > 0 ? param.Height - 100 : param.Height - 200);
+        //Rast3Anker = (short)(nalichniki[(short)Raspolozhenie.Ниж] > 0 ? param.Height - 100 : param.Height - 200);
+        Rast3Anker = (short)(param.Height - 200);
 
         //Диаметры анкерных отверстий
         if (zSt) {
