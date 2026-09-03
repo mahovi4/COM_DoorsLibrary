@@ -633,7 +633,7 @@ public class ODL : IODL
     {
         var WZP = stvorka == Stvorka.Активная ? wProfZA : wProfZP;
 
-        return LicevoyList_Width(stvorka) - WZP - wProf - pritvor * 2 - 0.5;
+        return LicevoyList_Width(stvorka) - WZP - wProf + 4;
     }
 
     public double VertRZPLength => 

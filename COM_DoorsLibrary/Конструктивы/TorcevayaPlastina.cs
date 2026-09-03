@@ -19,6 +19,12 @@ namespace COM_DoorsLibrary
 
         public double OtstupZamok { get; }
 
+        public double OtstupZamok2 { get; }
+
+        public double Zaglushka_Width { get; }
+
+        public double Zaglushka_Length { get; }
+
         public double Groove { get; }
 
         public int Count { get; }
@@ -27,12 +33,15 @@ namespace COM_DoorsLibrary
 
         public double Gap { get; }
 
-        public TorcevayaPlastina(double width, double length, double otstupPetlya, double otstupZamok = 0, bool tm = false)
+        public TorcevayaPlastina(double width, double length, double otstupPetlya, double otstupZamok = 0, bool tm = false, double otstupZamok2 = 0, double zaglushkaWidth = 0, double zaglushkaLength = 0)
         {
             Width = width;
             Length = length;
             OtstupPetlya = otstupPetlya;
             OtstupZamok = otstupZamok == 0 ? otstupPetlya : otstupZamok;
+            OtstupZamok2 = otstupZamok2;
+            Zaglushka_Width = zaglushkaWidth;
+            Zaglushka_Length = zaglushkaLength;
 
             var des = tm ? DesiredGroove * 2 : DesiredGroove;
             Gap = tm ? 1 : 0.001;

@@ -238,7 +238,7 @@ public class DM : IDM
                 Passivka = new StvorkaDM(ref param, Stvorka.Пассивная, ref cons, ref ini, ref Korobka);
             }
 
-            var tpVal = ini.ReadKey("TorcevayaPlastina", "DM_TP_Sw").Equals("1") && Passivka == null;
+            var tpVal = ini.ReadKey("TorcevayaPlastina", "DM_TP_Sw").Equals("1") && param.Thick_VL < 2;
 
             if (tpVal)
             {
@@ -248,12 +248,8 @@ public class DM : IDM
                 key = k62 > 0 ? "DM_TP_Otstup_62" : k70 > 0 ? "DM_TP_Otstup_70" : "DM_TP_Otstup_53";
                 var otsP = double.Parse(ini.ReadKey("TorcevayaPlastina", key));
 
-                var otsZ = otsP;
-                if (param.WAktiv.Value > 0)
-                {
-                    key = k62 > 0 ? "DM_TP_Otstup2_62" : k70 > 0 ? "DM_TP_Otstup2_70" : "DM_TP_Otstup2_53";
-                    otsZ = double.Parse(ini.ReadKey("TorcevayaPlastina", key));
-                }
+                key = k62 > 0 ? "DM_TP_Otstup2_62" : k70 > 0 ? "DM_TP_Otstup2_70" : "DM_TP_Otstup2_53";
+                var otsZ = Passivka == null ? otsP : double.Parse(ini.ReadKey("TorcevayaPlastina", key));
 
                 if (Aktivka.VList_Hight + width - param.Thick_VL <= cons.LIST_HIGHT)
                     torceviePlastini[0] = new TorcevayaPlastina(width - param.Thick_VL,
@@ -395,10 +391,10 @@ public class DM : IDM
 
     private void CheckConfig()
     {
-        if (param.Height % 10 != 0)
-            Errors = "Высота не кратна 10! ";
-        if (param.Width % 10 != 0)
-            Errors = "Ширина не кратна 10! ";
+        //if (param.Height % 10 != 0)
+        //    Errors = "Высота не кратна 10! ";
+        //if (param.Width % 10 != 0)
+        //    Errors = "Ширина не кратна 10! ";
         if (param.Zamok[1].Kod == 20)
         {
             param.Zamok[1].Kod = 1;

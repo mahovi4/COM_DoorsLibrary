@@ -78,20 +78,10 @@ internal class Reshetka
         get
         {
             if (reshParam.Type == eReshetka.ПП_решетка)
-            {
                 return reshParam.Height;
-            }
-            else
-            {
-                if (reshParam.Height > 20)
-                {
-                    return (short)(reshParam.Height - 20);
-                }
-                else
-                {
-                    return reshParam.Height;
-                }
-            }
+            if(reshParam.Type == eReshetka.Вент_решетка)
+                return (short)(reshParam.Height - 20);
+            return (short)(reshParam.Height + 30);
         }
     }
     public short Width
@@ -99,20 +89,10 @@ internal class Reshetka
         get
         {
             if (reshParam.Type == eReshetka.ПП_решетка)
-            {
                 return reshParam.Width;
-            }
-            else
-            {
-                if (reshParam.Width > 20)
-                {
-                    return (short)(reshParam.Width - 20);
-                }
-                else
-                {
-                    return reshParam.Width;
-                }
-            }
+            if (reshParam.Type == eReshetka.Вент_решетка)
+                return (short)(reshParam.Width - 20);
+            return (short)(reshParam.Width + 30);
         }
     }
     public short OtPola

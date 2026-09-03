@@ -2403,8 +2403,9 @@ public struct ReshParam
 
     public string AsString()
     {
-        if (Type == eReshetka.нет) return "Нет";
-        else return Height + "x" + Width + '\n' + "От пола: " + OtPola;
+        if (Type == eReshetka.нет) 
+            return "Нет";
+        return Height + "x" + Width + '\n' + "От пола: " + OtPola;
     }
     public void FromString(string str)
     {
@@ -2855,7 +2856,8 @@ public enum Kodoviy {
 public enum eReshetka {
     нет,
     ПП_решетка,
-    Вент_решетка
+    Вент_решетка,
+    Вент_решетка_лазер
 }
 public enum ZashResh {
     нет,
