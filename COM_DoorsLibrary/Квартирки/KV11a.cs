@@ -2,7 +2,7 @@
 
 namespace COM_DoorsLibrary
 {
-    public sealed class KV11 : KVD
+    public sealed class KV11a : KVD
     {
         public override string Name => "КВ11";
         public override string Description => "ДПМ-1(EI30)";
@@ -48,7 +48,7 @@ namespace COM_DoorsLibrary
             }
         }
 
-        public KV11(TableData data, Constants cons)
+        public KV11a(TableData data, Constants cons)
             : base(data, cons)
         {
             var template = TemplateFileName;

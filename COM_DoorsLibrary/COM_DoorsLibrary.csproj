@@ -60,9 +60,10 @@
     <Compile Include="Framuga.cs" />
     <Compile Include="Shared.cs" />
     <Compile Include="Вспомогательные\SharedExpression.cs" />
+    <Compile Include="Квартирки\KV11b.cs" />
     <Compile Include="Квартирки\KV12a.cs" />
     <Compile Include="Квартирки\KV12b.cs" />
-    <Compile Include="Квартирки\KV11.cs" />
+    <Compile Include="Квартирки\KV11a.cs" />
     <Compile Include="Квартирки\KV10.cs" />
     <Compile Include="Квартирки\KV01c.cs" />
     <Compile Include="Квартирки\KV01b.cs" />
