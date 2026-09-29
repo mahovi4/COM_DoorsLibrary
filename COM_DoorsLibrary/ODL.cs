@@ -127,6 +127,7 @@ public class ODL : IODL
     private string _Errors, _Problems, ruchkaName, zamokName;
     private readonly double[] nalichniki = new double[4];
     private bool cm, suv;
+    private int sumPritGorA, sumPritGorP;
 
     private readonly Constants cons = new Constants();
     private IniFile ini;
@@ -261,6 +262,12 @@ public class ODL : IODL
         ZPOtPola = (short)(ListOtPola + pritvorD);
 
         pritvor = (short)(param.Otkrivanie.IsNO ? 16 : 3);
+
+        sumPritGorA = pritvor * 2;
+        if (param.WAktiv.Value > 0)
+            sumPritGorP = param.Otkrivanie.IsNO ? -12 + pritvor : 16 + pritvor;
+        else
+            sumPritGorP = 0;
 
         //Высота замкового (петлевого) профиля
         if (param.Nalichniki[1] == 0)
@@ -452,10 +459,10 @@ public class ODL : IODL
     {
         get
         {
-            if (param.WAktiv.Value != 0 & (param.Otkrivanie.Value == Otkrivanie.ЛевоеВО | param.Otkrivanie.Value == Otkrivanie.ПравоеВО))
-            {
-                _Errors += "ОДЛ-2 внутреннего открывания - такой мадели не существует. ";
-            }
+            //if (param.WAktiv.Value != 0 & (param.Otkrivanie.Value == Otkrivanie.ЛевоеВО | param.Otkrivanie.Value == Otkrivanie.ПравоеВО))
+            //{
+            //    _Errors += "ОДЛ-2 внутреннего открывания - такой мадели не существует. ";
+            //}
             return _Errors;
         }
         set => _Errors += value;
@@ -632,8 +639,9 @@ public class ODL : IODL
     public double GorRZPLength(Stvorka stvorka)
     {
         var WZP = stvorka == Stvorka.Активная ? wProfZA : wProfZP;
+        var sumPritvor = stvorka == Stvorka.Активная ? sumPritGorA : sumPritGorP;
 
-        return LicevoyList_Width(stvorka) - WZP - wProf + 4;
+        return LicevoyList_Width(stvorka) - WZP - wProf - sumPritvor;
     }
 
     public double VertRZPLength => 
