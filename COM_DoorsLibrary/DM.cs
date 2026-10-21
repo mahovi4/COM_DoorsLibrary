@@ -391,10 +391,10 @@ public class DM : IDM
 
     private void CheckConfig()
     {
-        //if (param.Height % 10 != 0)
-        //    Errors = "Высота не кратна 10! ";
-        //if (param.Width % 10 != 0)
-        //    Errors = "Ширина не кратна 10! ";
+        if (param.Height % 10 != 0)
+            Errors = "Высота не кратна 10! ";
+        if (param.Width % 10 != 0)
+            Errors = "Ширина не кратна 10! ";
         if (param.Zamok[1].Kod == 20)
         {
             param.Zamok[1].Kod = 1;
