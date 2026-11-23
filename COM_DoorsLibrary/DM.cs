@@ -429,6 +429,12 @@ public class DM : IDM
         if (param.RuchkaPS[0].Kod == (short)RuchkaNames.Ручка_скоба & param.RuchkaPS[0].Mezhosevoe > 400)
             Problems = "Проверь расположение ручки на пассивной створке!";
 
+        if (param.RuchkaAS[0].IsAntipanika && Stvorka_Width(Stvorka.Активная) > 1080)
+            Problems = "Антипаника на створке более 1080 мм";
+
+        if(param.Zadvizhka.Kod == (int)ZadvizhkaNames.FL_0360)
+            Problems = "Задвижки FL-0360-CR в качестве торцевых";
+
         if (IsOkno(0))
         {
             if (param.RuchkaAS[0].Kod == (short)RuchkaNames.Ручка_скоба |

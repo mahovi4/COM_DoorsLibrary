@@ -2200,6 +2200,7 @@ public struct RuchkaParam
         KodRuchkaLL = kodRuchkaLL;
     }
 
+    public bool IsAntipanika => Kod > 10;
     public string AsString()
     {
         string s = Name;
