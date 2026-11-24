@@ -78,10 +78,10 @@ namespace COM_DoorsLibrary
                 case (short)PorogNames.Порог_25_скос:
                 case (short)PorogNames.Порог_25:
                 case (short)PorogNames.Порог_14:
-                    return Data.LicPanel ? 79.65 : 71.65;
+                    return 74.65;
 
                 case (short)PorogNames.Порог_40:
-                    return Data.LicPanel ? 90.65 : 82.65;
+                    return 85.65;
 
                 default:
                     return 0;
@@ -93,13 +93,13 @@ namespace COM_DoorsLibrary
             switch (porogKod)
             {
                 case (short)PorogNames.Порог_14:
-                    return 43.26;
+                    return 45.26;
 
                 case (short)PorogNames.Порог_25_скос:
-                    return 58.26;
+                    return 60.26;
 
                 case (short)PorogNames.Порог_40:
-                    return 82.75;
+                    return 84.75;
 
                 default:
                     return 0;

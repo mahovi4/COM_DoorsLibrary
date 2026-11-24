@@ -554,7 +554,7 @@ public enum ZadvizhkaNames
     Ночной_сторож = 1,
     ЗД_01 = 2,
     ЗТ_150 = 3,
-    FL_0360
+    FL_0360 = 4
 }
 
 public enum SdvigoviyNames
