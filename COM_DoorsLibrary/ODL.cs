@@ -177,7 +177,7 @@ public class ODL : IODL
         //Высота лицевых листов
         if (param.Nalichniki[(int)Raspolozhenie.Ниж] == 0)
         {
-            if (param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
+            if (param.Otkrivanie.IsNO)
             {
                 if (param.Porog.Kod == 25)
                     HLD = (short)(_Height - short.Parse(ini.ReadKey("ODL", "ODL_K_HL_P25")));
@@ -202,7 +202,7 @@ public class ODL : IODL
         }
         else
         {
-            if (param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
+            if (param.Otkrivanie.IsNO)
             {
                 HLD = (short)(_Height - short.Parse(ini.ReadKey("ODL", "ODL_K_HL_PR")));
             }
@@ -214,7 +214,7 @@ public class ODL : IODL
         //Ширина лицевых листов
         if (param.WAktiv.Value == 0d)
         {
-            if (param.Otkrivanie.Value == Otkrivanie.Левое | param.Otkrivanie.Value == Otkrivanie.Правое)
+            if (param.Otkrivanie.IsNO)
             {
                 WlA = (short)(_Width - short.Parse(ini.ReadKey("ODL", "ODL1_K_WL")));
             }
@@ -788,4 +788,22 @@ public class ODL : IODL
     }
 
     public int FileCount => IsPassivka ? 12 : 9;
+
+    public int PetliOnStoyka
+    {
+        get
+        {
+            if (WAktiv == 0)
+                return param.PetliCount;
+
+            if (param.PetliCount > 4)
+                return 3;
+
+            return 2;
+        }
+    }
+
+    public int PetlyaOtVerha => param.Otkrivanie.IsNO ? 238 : 250;
+
+    public int PetlyaOtPola => param.Nalichniki[(int)Raspolozhenie.Ниж] > 0 ? 40 + ListOtPola : 140 + ListOtPola;
 }

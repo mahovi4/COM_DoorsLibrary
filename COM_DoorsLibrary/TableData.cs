@@ -1927,6 +1927,7 @@ public class TableData : ITableData
                 Nalichniki = _Nalichniki,
                 Zamok = _Zamok,
                 Ruchka = _Ruchka_AS,
+                PetliCount = PetliCount,
                 Glazok = _Glazok.ToArray(),
                 Zadvizhka = _Zadvizhka,
                 Protivos = _Protivos,
@@ -2717,6 +2718,7 @@ public struct ODLParam
     public short[] Nalichniki;               //Размеры наличников (Nalichniki(0)-верхний, Nalichniki(1)-нижний, Nalichniki(2)-правый, Nalichniki(3)-левый)
 
     //---Фурнитура-------------------------------------------------------------------------------------------------------------------------------------
+    public int PetliCount;
     public ZamokParam[] Zamok;         //Варианты замков
     public RuchkaParam[] Ruchka;      //Варианты ручек
     public GlazokParam[] Glazok;      //Варианты глазков
